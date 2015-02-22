@@ -1,0 +1,511 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		28197C881A63617C00276EF9 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 28197C871A63617C00276EF9 /* AppDelegate.m */; };
+		28197C8A1A63617C00276EF9 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 28197C891A63617C00276EF9 /* main.m */; };
+		28197C8C1A63617C00276EF9 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 28197C8B1A63617C00276EF9 /* Images.xcassets */; };
+		28197C8F1A63617C00276EF9 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28197C8D1A63617C00276EF9 /* MainMenu.xib */; };
+		28197C9B1A63617C00276EF9 /* EquationEditorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 28197C9A1A63617C00276EF9 /* EquationEditorTests.m */; };
+		28197CA61A6361BE00276EF9 /* EquationField.m in Sources */ = {isa = PBXBuildFile; fileRef = 28197CA51A6361BE00276EF9 /* EquationField.m */; };
+		282141CC1A95898700129536 /* STIXMathJax_Main-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 282141CB1A95898700129536 /* STIXMathJax_Main-Italic.otf */; };
+		2847AE3C1A69F69F00FF73D6 /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2847AE3B1A69F69F00FF73D6 /* GLUT.framework */; };
+		28520E141A97F99600CC891A /* EquationTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 28520E131A97F99600CC891A /* EquationTextField.m */; };
+		2867FF691A991A16009F56B4 /* EquationCursor.m in Sources */ = {isa = PBXBuildFile; fileRef = 2867FF681A991A16009F56B4 /* EquationCursor.m */; };
+		287BBF121A69AACF00F11710 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 287BBF111A69AACF00F11710 /* OpenGL.framework */; };
+		287BBF141A69AADE00F11710 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 287BBF131A69AADE00F11710 /* Cocoa.framework */; };
+		287BBF171A69B2AF00F11710 /* EquationFieldComponent.m in Sources */ = {isa = PBXBuildFile; fileRef = 287BBF161A69B2AF00F11710 /* EquationFieldComponent.m */; };
+		289B016E1A97FF9C00BB7E1B /* EquationFieldOptions.m in Sources */ = {isa = PBXBuildFile; fileRef = 289B016D1A97FF9C00BB7E1B /* EquationFieldOptions.m */; };
+		28C771671A715EE60019755E /* summation.png in Resources */ = {isa = PBXBuildFile; fileRef = 28C771661A715EE60019755E /* summation.png */; };
+		28C771691A716FC40019755E /* integration.png in Resources */ = {isa = PBXBuildFile; fileRef = 28C771681A716FC40019755E /* integration.png */; };
+		28C7716B1A71BBEA0019755E /* root.png in Resources */ = {isa = PBXBuildFile; fileRef = 28C7716A1A71BBEA0019755E /* root.png */; };
+		28C9CCCC1A701E63007FBCEA /* latinmodern-math.otf in Resources */ = {isa = PBXBuildFile; fileRef = 28C9CCC91A701E63007FBCEA /* latinmodern-math.otf */; };
+		28C9CCCD1A701E63007FBCEA /* FontManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 28C9CCCB1A701E63007FBCEA /* FontManager.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		28197C951A63617C00276EF9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 28197C791A63617C00276EF9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 28197C801A63617C00276EF9;
+			remoteInfo = EquationEditor;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		280B45941A701A6100C59639 /* EquationFieldComponentType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EquationFieldComponentType.h; sourceTree = "<group>"; };
+		28197C811A63617C00276EF9 /* EquationEditor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EquationEditor.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		28197C851A63617C00276EF9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		28197C861A63617C00276EF9 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		28197C871A63617C00276EF9 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		28197C891A63617C00276EF9 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		28197C8B1A63617C00276EF9 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		28197C8E1A63617C00276EF9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		28197C941A63617C00276EF9 /* EquationEditorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EquationEditorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		28197C991A63617C00276EF9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		28197C9A1A63617C00276EF9 /* EquationEditorTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EquationEditorTests.m; sourceTree = "<group>"; };
+		28197CA41A6361BE00276EF9 /* EquationField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EquationField.h; sourceTree = "<group>"; };
+		28197CA51A6361BE00276EF9 /* EquationField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EquationField.m; sourceTree = "<group>"; };
+		282141CB1A95898700129536 /* STIXMathJax_Main-Italic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "STIXMathJax_Main-Italic.otf"; sourceTree = "<group>"; };
+		2847AE3B1A69F69F00FF73D6 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
+		28520E121A97F99600CC891A /* EquationTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EquationTextField.h; sourceTree = "<group>"; };
+		28520E131A97F99600CC891A /* EquationTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EquationTextField.m; sourceTree = "<group>"; };
+		2867FF671A991A16009F56B4 /* EquationCursor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EquationCursor.h; sourceTree = "<group>"; };
+		2867FF681A991A16009F56B4 /* EquationCursor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EquationCursor.m; sourceTree = "<group>"; };
+		287BBF111A69AACF00F11710 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		287BBF131A69AADE00F11710 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		287BBF151A69B2AF00F11710 /* EquationFieldComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EquationFieldComponent.h; sourceTree = "<group>"; };
+		287BBF161A69B2AF00F11710 /* EquationFieldComponent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EquationFieldComponent.m; sourceTree = "<group>"; };
+		289B016C1A97FF9C00BB7E1B /* EquationFieldOptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EquationFieldOptions.h; sourceTree = "<group>"; };
+		289B016D1A97FF9C00BB7E1B /* EquationFieldOptions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EquationFieldOptions.m; sourceTree = "<group>"; };
+		28C771661A715EE60019755E /* summation.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = summation.png; sourceTree = "<group>"; };
+		28C771681A716FC40019755E /* integration.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = integration.png; sourceTree = "<group>"; };
+		28C7716A1A71BBEA0019755E /* root.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = root.png; sourceTree = "<group>"; };
+		28C9CCC91A701E63007FBCEA /* latinmodern-math.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "latinmodern-math.otf"; sourceTree = "<group>"; };
+		28C9CCCA1A701E63007FBCEA /* FontManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FontManager.h; sourceTree = "<group>"; };
+		28C9CCCB1A701E63007FBCEA /* FontManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FontManager.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		28197C7E1A63617C00276EF9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2847AE3C1A69F69F00FF73D6 /* GLUT.framework in Frameworks */,
+				287BBF141A69AADE00F11710 /* Cocoa.framework in Frameworks */,
+				287BBF121A69AACF00F11710 /* OpenGL.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		28197C911A63617C00276EF9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		28197C781A63617C00276EF9 = {
+			isa = PBXGroup;
+			children = (
+				28197C831A63617C00276EF9 /* EquationEditor */,
+				28197C971A63617C00276EF9 /* EquationEditorTests */,
+				28197C821A63617C00276EF9 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		28197C821A63617C00276EF9 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				28197C811A63617C00276EF9 /* EquationEditor.app */,
+				28197C941A63617C00276EF9 /* EquationEditorTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		28197C831A63617C00276EF9 /* EquationEditor */ = {
+			isa = PBXGroup;
+			children = (
+				28197C861A63617C00276EF9 /* AppDelegate.h */,
+				28197CA41A6361BE00276EF9 /* EquationField.h */,
+				287BBF151A69B2AF00F11710 /* EquationFieldComponent.h */,
+				289B016C1A97FF9C00BB7E1B /* EquationFieldOptions.h */,
+				28520E121A97F99600CC891A /* EquationTextField.h */,
+				2867FF671A991A16009F56B4 /* EquationCursor.h */,
+				280B45941A701A6100C59639 /* EquationFieldComponentType.h */,
+				28C9CCCA1A701E63007FBCEA /* FontManager.h */,
+				288230E71A868A7000DB700C /* src */,
+				288230E61A868A3F00DB700C /* Image Symbols */,
+				28197C8B1A63617C00276EF9 /* Images.xcassets */,
+				28197C8D1A63617C00276EF9 /* MainMenu.xib */,
+				28C9CCC81A701E63007FBCEA /* FontFolder */,
+				28197C841A63617C00276EF9 /* Supporting Files */,
+			);
+			path = EquationEditor;
+			sourceTree = "<group>";
+		};
+		28197C841A63617C00276EF9 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				2847AE3B1A69F69F00FF73D6 /* GLUT.framework */,
+				287BBF131A69AADE00F11710 /* Cocoa.framework */,
+				287BBF111A69AACF00F11710 /* OpenGL.framework */,
+				28197C851A63617C00276EF9 /* Info.plist */,
+				28197C891A63617C00276EF9 /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		28197C971A63617C00276EF9 /* EquationEditorTests */ = {
+			isa = PBXGroup;
+			children = (
+				28197C9A1A63617C00276EF9 /* EquationEditorTests.m */,
+				28197C981A63617C00276EF9 /* Supporting Files */,
+			);
+			path = EquationEditorTests;
+			sourceTree = "<group>";
+		};
+		28197C981A63617C00276EF9 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				28197C991A63617C00276EF9 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		288230E61A868A3F00DB700C /* Image Symbols */ = {
+			isa = PBXGroup;
+			children = (
+				28C771661A715EE60019755E /* summation.png */,
+				28C7716A1A71BBEA0019755E /* root.png */,
+				28C771681A716FC40019755E /* integration.png */,
+			);
+			name = "Image Symbols";
+			sourceTree = "<group>";
+		};
+		288230E71A868A7000DB700C /* src */ = {
+			isa = PBXGroup;
+			children = (
+				2867FF681A991A16009F56B4 /* EquationCursor.m */,
+				289B016D1A97FF9C00BB7E1B /* EquationFieldOptions.m */,
+				28520E131A97F99600CC891A /* EquationTextField.m */,
+				28197C871A63617C00276EF9 /* AppDelegate.m */,
+				28C9CCCB1A701E63007FBCEA /* FontManager.m */,
+				28197CA51A6361BE00276EF9 /* EquationField.m */,
+				287BBF161A69B2AF00F11710 /* EquationFieldComponent.m */,
+			);
+			name = src;
+			sourceTree = "<group>";
+		};
+		28C9CCC81A701E63007FBCEA /* FontFolder */ = {
+			isa = PBXGroup;
+			children = (
+				282141CB1A95898700129536 /* STIXMathJax_Main-Italic.otf */,
+				28C9CCC91A701E63007FBCEA /* latinmodern-math.otf */,
+			);
+			path = FontFolder;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		28197C801A63617C00276EF9 /* EquationEditor */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 28197C9E1A63617C00276EF9 /* Build configuration list for PBXNativeTarget "EquationEditor" */;
+			buildPhases = (
+				28197C7D1A63617C00276EF9 /* Sources */,
+				28197C7E1A63617C00276EF9 /* Frameworks */,
+				28197C7F1A63617C00276EF9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = EquationEditor;
+			productName = EquationEditor;
+			productReference = 28197C811A63617C00276EF9 /* EquationEditor.app */;
+			productType = "com.apple.product-type.application";
+		};
+		28197C931A63617C00276EF9 /* EquationEditorTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 28197CA11A63617C00276EF9 /* Build configuration list for PBXNativeTarget "EquationEditorTests" */;
+			buildPhases = (
+				28197C901A63617C00276EF9 /* Sources */,
+				28197C911A63617C00276EF9 /* Frameworks */,
+				28197C921A63617C00276EF9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				28197C961A63617C00276EF9 /* PBXTargetDependency */,
+			);
+			name = EquationEditorTests;
+			productName = EquationEditorTests;
+			productReference = 28197C941A63617C00276EF9 /* EquationEditorTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		28197C791A63617C00276EF9 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0610;
+				ORGANIZATIONNAME = "Thomas Redding";
+				TargetAttributes = {
+					28197C801A63617C00276EF9 = {
+						CreatedOnToolsVersion = 6.1.1;
+					};
+					28197C931A63617C00276EF9 = {
+						CreatedOnToolsVersion = 6.1.1;
+						TestTargetID = 28197C801A63617C00276EF9;
+					};
+				};
+			};
+			buildConfigurationList = 28197C7C1A63617C00276EF9 /* Build configuration list for PBXProject "EquationEditor" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 28197C781A63617C00276EF9;
+			productRefGroup = 28197C821A63617C00276EF9 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				28197C801A63617C00276EF9 /* EquationEditor */,
+				28197C931A63617C00276EF9 /* EquationEditorTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		28197C7F1A63617C00276EF9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				282141CC1A95898700129536 /* STIXMathJax_Main-Italic.otf in Resources */,
+				28197C8C1A63617C00276EF9 /* Images.xcassets in Resources */,
+				28C771671A715EE60019755E /* summation.png in Resources */,
+				28C771691A716FC40019755E /* integration.png in Resources */,
+				28197C8F1A63617C00276EF9 /* MainMenu.xib in Resources */,
+				28C9CCCC1A701E63007FBCEA /* latinmodern-math.otf in Resources */,
+				28C7716B1A71BBEA0019755E /* root.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		28197C921A63617C00276EF9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		28197C7D1A63617C00276EF9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				287BBF171A69B2AF00F11710 /* EquationFieldComponent.m in Sources */,
+				28C9CCCD1A701E63007FBCEA /* FontManager.m in Sources */,
+				28197C8A1A63617C00276EF9 /* main.m in Sources */,
+				289B016E1A97FF9C00BB7E1B /* EquationFieldOptions.m in Sources */,
+				28197C881A63617C00276EF9 /* AppDelegate.m in Sources */,
+				28197CA61A6361BE00276EF9 /* EquationField.m in Sources */,
+				28520E141A97F99600CC891A /* EquationTextField.m in Sources */,
+				2867FF691A991A16009F56B4 /* EquationCursor.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		28197C901A63617C00276EF9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				28197C9B1A63617C00276EF9 /* EquationEditorTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		28197C961A63617C00276EF9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 28197C801A63617C00276EF9 /* EquationEditor */;
+			targetProxy = 28197C951A63617C00276EF9 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		28197C8D1A63617C00276EF9 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				28197C8E1A63617C00276EF9 /* Base */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		28197C9C1A63617C00276EF9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		28197C9D1A63617C00276EF9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		28197C9F1A63617C00276EF9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = EquationEditor/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		28197CA01A63617C00276EF9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = EquationEditor/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		28197CA21A63617C00276EF9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = EquationEditorTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/EquationEditor.app/Contents/MacOS/EquationEditor";
+			};
+			name = Debug;
+		};
+		28197CA31A63617C00276EF9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = EquationEditorTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/EquationEditor.app/Contents/MacOS/EquationEditor";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		28197C7C1A63617C00276EF9 /* Build configuration list for PBXProject "EquationEditor" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				28197C9C1A63617C00276EF9 /* Debug */,
+				28197C9D1A63617C00276EF9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		28197C9E1A63617C00276EF9 /* Build configuration list for PBXNativeTarget "EquationEditor" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				28197C9F1A63617C00276EF9 /* Debug */,
+				28197CA01A63617C00276EF9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		28197CA11A63617C00276EF9 /* Build configuration list for PBXNativeTarget "EquationEditorTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				28197CA21A63617C00276EF9 /* Debug */,
+				28197CA31A63617C00276EF9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 28197C791A63617C00276EF9 /* Project object */;
+}

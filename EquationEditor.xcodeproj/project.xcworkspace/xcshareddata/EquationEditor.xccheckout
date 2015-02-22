@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>25FE5899-65E7-42A9-AC9E-29273AD59D65</string>
+	<key>IDESourceControlProjectName</key>
+	<string>EquationEditor</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>5901E425EC3BB72879F9F2F631B1DC27FBA785EA</key>
+		<string>https://github.com/KurtGodel/OpenEquationEditor.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>EquationEditor II/EquationEditor.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>5901E425EC3BB72879F9F2F631B1DC27FBA785EA</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/KurtGodel/OpenEquationEditor.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>5901E425EC3BB72879F9F2F631B1DC27FBA785EA</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>5901E425EC3BB72879F9F2F631B1DC27FBA785EA</string>
+			<key>IDESourceControlWCCName</key>
+			<string>OpenEquationEditor</string>
+		</dict>
+	</array>
+</dict>
+</plist>
