@@ -31,19 +31,37 @@
 @property EquationFieldComponent *parent;
 
 /*
- - LEAF: No children
- - NORMAL: Children from left (0) to right (infinity)
- - DIVISION: Children from top (0) to bottom (1)
+ - LEAF:
+    Children: None
+    Other: Has a EquationTextField
+ - NORMAL:
+    Children: leftmost (0), ... rightmost
+    Other: None
+ - DIVISION:
+    Children: top (0), bottom (1) - these children are either LEAFs or NORMALs
+    Other: Draws a horizontal line between its children
+ - SUPERSCRIPT:
+    Children: 1 child - the child is always either a LEAF or a NORMAL
 */
 @property NSMutableArray *eqChildren;
 
 - (EquationFieldComponent*)initWithFontManagerOptionsAndParent:(FontManager*)f options: (EquationFieldOptions*) o parent: (EquationFieldComponent*) p;
+// request space
 - (void) makeSizeRequest: (double) fontSize;
+// accept the space given by parent; give children space
 - (void) grantSizeRequest: (NSRect) rect;
+// remove everyone from current subview and add all children to subview
 - (void) addDescendantsToSubview;
+// pass information on to correct child involving where to send the cursor; if a LEAF, place the cursor at the correct spot
 - (BOOL) setStartCursorToEq: (double) x y: (double) y;
+// convert self to LaTex (recursively call children)
 - (NSString*) toLaTeX;
+// shift component's x positions to eliminate unneccessary space that occurs due to the fact that font sizes must be integers
 - (void) completeMinorComponentShifts;
+// erase the integers that say where the cursor (or highlighting endpoints) currently is (are)
 - (void) resetAllCursorPointers;
+
+
+
 
 @end

@@ -12,15 +12,6 @@
 
 - (void)drawRect:(NSRect)dirtyRect {
     [super drawRect:dirtyRect];
-    
-    bool showBoundaries = false;
-    if(showBoundaries) {
-        [[NSColor colorWithRed:0.0 green:0.0 blue:1.0 alpha:0.1] setFill];
-        NSRectFill(dirtyRect);
-    }
-    
-    // Drawing code here.
-    [super drawRect:dirtyRect];
 }
 
 - (EquationTextField*) init {
@@ -30,6 +21,7 @@
     [self setDrawsBackground:false];
     [self setFocusRingType:NSFocusRingTypeNone];
     [self setAllowsEditingTextAttributes:false];
+    self.containsCursor = false;
     return self;
 }
 
@@ -40,7 +32,7 @@
     [self setDrawsBackground:false];
     [self setFocusRingType:NSFocusRingTypeNone];
     [self setAllowsEditingTextAttributes:false];
-    
+    self.containsCursor = false;
     return self;
 }
 

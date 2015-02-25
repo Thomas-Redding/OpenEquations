@@ -10,4 +10,6 @@
 
 @interface EquationTextField : NSTextField
 
+@property BOOL containsCursor;
+
 @end

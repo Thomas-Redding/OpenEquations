@@ -216,6 +216,7 @@ double heightRatio = -1;
         self.startCursorLocation = 0;
         NSDictionary *attr = @{NSFontAttributeName : [self.fontManager getFont:self.eqTextField.frame.size.height/self.options.fontSizeToLeafA]};
         double xpos = 0;
+        [self.eqTextField setContainsCursor:true];
         for(int i=0; i<=self.eqTextField.stringValue.length; i++) {
             double width = [[[NSAttributedString alloc] initWithString:[self.eqTextField.stringValue substringToIndex:i] attributes:attr] size].width;
             if((xpos + width)/2 <= x) {
@@ -346,6 +347,9 @@ double heightRatio = -1;
     self.childWithEndCursor = -1;
     self.startCursorLocation = -1;
     self.endCursorLocation = -1;
+    if(self.eqFormat == LEAF) {
+        [self.eqTextField setContainsCursor:false];
+    }
 }
 
 @end

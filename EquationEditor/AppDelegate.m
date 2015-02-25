@@ -37,15 +37,15 @@
      The object automatically recalculates when either of the following occur
      1. The field's frame is set (either through the autoresizingMask or manually)
      2. The user changes the equation
-     
-     The main time that an applicaiton must tell the field to recalculate is when an option is changed (though the change will take effect once one of the above conditions occurs).
+     3. Any of the following methods is run
+         - setMaxFontSize
+         - setDivisionDecayRate
+         - setSuperscriptDecayRate
+         - setMinFontSizeAsRatioOfMaxFontSize
     */
     
-    self.eqField.options.maxFontSize = 50;
-    
+    // If, for whatever reason, you need to recalcualte the formating of the equation, simply:
     [self.eqField completeRecalculation];
-    
-    
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
