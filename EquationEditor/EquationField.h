@@ -20,6 +20,7 @@
 @property FontManager* fontManager;
 @property EquationFieldOptions* options;
 @property EquationCursor *cursor;
+@property double minFontSize;
 
 - (EquationField*) initWithFont: (FontManager*) f;
 - (void) completeRecalculation;

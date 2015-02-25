@@ -16,6 +16,7 @@ int cursorCounter = 0;
     self = [super init];
     self.fontManager = f;
     self.options = [[EquationFieldOptions alloc] init];
+    self.minFontSize = 95;
     
     [self setWantsLayer:YES];
     double shade = 1; // system background: 0.905882353;
@@ -66,12 +67,29 @@ int cursorCounter = 0;
 }
 
 - (void) completeRecalculation {
+    // make preliminary size requests
     [self.eq makeSizeRequest:self.options.maxFontSize];
     double ratio = fmin(self.frame.size.width/self.eq.frame.size.width, self.frame.size.height/self.eq.frame.size.height);
     if(ratio > 1) {
         ratio = 1;
     }
-    NSLog(@"%f", ratio);
+    
+    // set minimum font size to 24 pt
+    self.options.minFontSizeAsRatioOfMaxFontSize = (self.minFontSize/ratio)/self.options.maxFontSize;
+    
+    // if minimum font size is too big to fit in the view, use the highest minimum font size that does fit
+    if(self.options.minFontSizeAsRatioOfMaxFontSize > 1) {
+        self.options.minFontSizeAsRatioOfMaxFontSize = 1;
+    }
+    
+    // make final size requests
+    [self.eq makeSizeRequest:self.options.maxFontSize];
+    ratio = fmin(self.frame.size.width/self.eq.frame.size.width, self.frame.size.height/self.eq.frame.size.height);
+    if(ratio > 1) {
+        ratio = 1;
+    }
+    
+    // finish recalculation
     [self.eq grantSizeRequest: NSMakeRect(1, (self.frame.size.height - self.eq.frame.size.height * ratio)/2, self.eq.frame.size.width * ratio, self.eq.frame.size.height * ratio)];
     [self.eq completeMinorComponentShifts];
     [self adjustCursorLocation];

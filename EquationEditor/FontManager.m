@@ -41,6 +41,8 @@
         }
         return self.fonts[size];
     }
+    NSLog(@"Font Error");
+    
     return nil;
 }
 

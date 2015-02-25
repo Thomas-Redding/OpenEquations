@@ -15,7 +15,6 @@
     self.maxFontSize = 99;
     self.divisionDecayRate = 0.8;
     self.minFontSizeAsRatioOfMaxFontSize = 0.3;
-    self.bufferFontSizeRatio = 0.2;
     return self;
 }
 
