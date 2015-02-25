@@ -12,7 +12,7 @@
 
 double heightRatio = -1;
 
-- (EquationFieldComponent*)initWithFontManagerOptionsAndParent:(FontManager*)f options: (EquationFieldOptions*) o parent: (EquationFieldComponent*) p {
+- (EquationFieldComponent*) initWithFontManagerOptionsAndParent:(FontManager*)f options: (EquationFieldOptions*) o parent: (EquationFieldComponent*) p {
     self = [super init];
     
     self.options = o;
@@ -32,10 +32,11 @@ double heightRatio = -1;
     return self;
 }
 
-- (void)drawRect:(NSRect)dirtyRect {
+- (void) drawRect:(NSRect)dirtyRect {
     // draw static features
     if(self.eqFormat == DIVISION) {
-        double thickness = self.frame.size.height/25;
+        double thickness = fmin([self.eqChildren[0] frame].size.height, [self.eqChildren[1] frame].size.height)/30;
+        // double thickness = self.frame.size.height/50;
         [[NSColor colorWithCalibratedRed:0.0 green:0.0 blue:0.0 alpha:1.0] setFill];
         NSRectFill(NSMakeRect(0, [self.eqChildren[1] frame].size.height-thickness, self.frame.size.width, thickness));
     }
@@ -183,9 +184,31 @@ double heightRatio = -1;
         }
         return true;
     }
-    else {
+    else if(self.eqFormat == DIVISION) {
+        if(y >= self.heightRatio*self.frame.size.height) {
+            BOOL success = [self.eqChildren[0] setStartCursorToEq:x y:y];
+            if(success) {
+                self.childWithStartCursor = 0;
+                return true;
+            }
+            else {
+                self.childWithStartCursor = -1;
+            }
+        }
+        else {
+            BOOL success = [self.eqChildren[1] setStartCursorToEq:x y:y];
+            if(success) {
+                self.childWithStartCursor = 1;
+                return true;
+            }
+            else {
+                self.childWithStartCursor = -1;
+            }
+        }
+    }
+    else if(self.eqFormat == NORMAL){
         for(int i=0; i<self.eqChildren.count; i++) {
-            if(x >= [self.eqChildren[i] frame].origin.x && y >= [self.eqChildren[i] frame].origin.y && x <= [self.eqChildren[i] frame].origin.x + [self.eqChildren[i] frame].size.width && y <= [self.eqChildren[i] frame].origin.y + [self.eqChildren[i] frame].size.height) {
+            if(x >= [self.eqChildren[i] frame].origin.x && x <= [self.eqChildren[i] frame].origin.x + [self.eqChildren[i] frame].size.width) {
                 BOOL success = [self.eqChildren[i] setStartCursorToEq:x y:y];
                 if(success) {
                     self.childWithStartCursor = i;
