@@ -178,7 +178,7 @@ int cursorCounter = 0;
 
 - (void)setFrame:(NSRect)frame {
     [super setFrame:frame];
-    [self completeRecalculation];
+    // [self completeRecalculation];
 }
 
 - (BOOL) acceptsFirstResponder {
