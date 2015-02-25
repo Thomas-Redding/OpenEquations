@@ -23,12 +23,10 @@
 @property int startCursorLocation;
 @property int endCursorLocation;
 
-// is true if any part of the component should be highlighted
-@property int isHighlighted;
-
 @property EquationFieldComponentType eqFormat;
 @property EquationTextField* eqTextField;
 @property NSImageView* eqImageView;
+@property EquationFieldComponent *parent;
 
 /*
  - LEAF: No children
@@ -37,12 +35,13 @@
 */
 @property NSMutableArray *eqChildren;
 
-- (EquationFieldComponent*)initWithFontManagerAndOptions:(FontManager*)f options: (EquationFieldOptions*) o;
+- (EquationFieldComponent*)initWithFontManagerOptionsAndParent:(FontManager*)f options: (EquationFieldOptions*) o parent: (EquationFieldComponent*) p;
 - (void) makeSizeRequest: (double) fontSize;
 - (void) grantSizeRequest: (NSRect) rect;
 - (void) addDescendantsToSubview;
 - (BOOL) setStartCursorToEq: (double) x y: (double) y;
 - (NSString*) toLaTeX;
 - (void) completeMinorComponentShifts;
+- (void) resetAllCursorPointers;
 
 @end

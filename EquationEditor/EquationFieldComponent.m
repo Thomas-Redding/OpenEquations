@@ -12,20 +12,22 @@
 
 double heightRatio = -1;
 
-- (EquationFieldComponent*)initWithFontManagerAndOptions:(FontManager*)f options: (EquationFieldOptions*) o {
+- (EquationFieldComponent*)initWithFontManagerOptionsAndParent:(FontManager*)f options: (EquationFieldOptions*) o parent: (EquationFieldComponent*) p {
     self = [super init];
     
     self.options = o;
+    self.parent = p;
+    self.fontManager = f;
     
     self.frame = NSMakeRect(0, 0, 0, 0);
-    self.fontManager = f;
     self.eqFormat = UNDEFINED;
     self.eqChildren = [[NSMutableArray alloc] init];
     self.childWithStartCursor = -1;
     self.childWithEndCursor = -1;
     self.startCursorLocation = -1;
     self.endCursorLocation = -1;
-    self.isHighlighted = false;
+    
+    self.layer.borderColor = [NSColor orangeColor].CGColor;
     
     return self;
 }
@@ -38,20 +40,25 @@ double heightRatio = -1;
         NSRectFill(NSMakeRect(0, [self.eqChildren[1] frame].size.height-thickness, self.frame.size.width, thickness));
     }
     else if(self.eqFormat == LEAF) {
+        /*
         [[NSColor colorWithCalibratedRed:1.0 green:0.0 blue:0.0 alpha:0.5] setFill];
         NSRectFill(dirtyRect);
+        */
     }
     
-    // draw highlighting
-    if(self.isHighlighted) {
-        if(self.eqFormat == LEAF) {
-            // todo
-        }
-        else {
-            [NSColor colorWithCalibratedRed:0.5 green:0.5 blue:1.0 alpha:1.0];
-            NSRectFill(NSMakeRect(dirtyRect.origin.x, dirtyRect.origin.y, dirtyRect.size.width, dirtyRect.size.height));
-        }
+    bool showBoundaries = false;
+    if(showBoundaries) {
+        double borderWidth = 2;
+        [[NSColor colorWithRed:1.0 green:0.0 blue:1.0 alpha:1] setFill];
+        NSRectFill(NSMakeRect(dirtyRect.origin.x, dirtyRect.origin.y, dirtyRect.size.width, borderWidth));
+        NSRectFill(NSMakeRect(dirtyRect.origin.x, dirtyRect.origin.y+dirtyRect.size.height-borderWidth, dirtyRect.size.width, borderWidth));
+        NSRectFill(NSMakeRect(dirtyRect.origin.x, dirtyRect.origin.y, borderWidth, dirtyRect.size.height));
+        NSRectFill(NSMakeRect(dirtyRect.origin.x+dirtyRect.size.width-borderWidth, dirtyRect.origin.y, borderWidth, dirtyRect.size.height));
     }
+    
+    
+    // draw highlighting
+    // todo
     
     [super drawRect:dirtyRect];
 }
@@ -67,7 +74,13 @@ double heightRatio = -1;
         NSSize size = [self.eqTextField.attributedStringValue size];
         self.heightRatio = 0.5;
         if([self.eqTextField.stringValue isEqual: @""]) {
-            size.width = fontSize;
+            // empty leaf
+            if(self.parent.eqFormat == DIVISION) {
+                size.width = fontSize;
+            }
+            else {
+                size.width = fontSize/4;
+            }
         }
         self.frame = NSMakeRect(self.frame.origin.x, self.frame.origin.y, size.width, fontSize);
     }
@@ -81,7 +94,7 @@ double heightRatio = -1;
                 heightBelow = [self.eqChildren[i] frame].size.height * [self.eqChildren[i] heightRatio];
             }
             if([self.eqChildren[i] frame].size.height * (1-[self.eqChildren[i] heightRatio]) > heightAbove) {
-                heightAbove = [self.eqChildren[i] frame].size.height * [self.eqChildren[i] heightRatio];
+                heightAbove = [self.eqChildren[i] frame].size.height * (1-[self.eqChildren[i] heightRatio]);
             }
         }
         self.heightRatio = heightBelow/(heightAbove+heightBelow);
@@ -107,7 +120,7 @@ double heightRatio = -1;
         self.eqTextField.frame = NSMakeRect(0, 0, rect.size.width+100, rect.size.height);
     }
     else if(self.eqFormat == NORMAL) {
-        double newX = rect.origin.x;
+        double newX = 0;
         double centerY = self.heightRatio * self.frame.size.height;
         for(int i=0; i<self.eqChildren.count; i++) {
             NSSize oldSize = [self.eqChildren[i] frame].size;
@@ -140,13 +153,12 @@ double heightRatio = -1;
 }
 
 - (void) addDescendantsToSubview {
+    [self setSubviews:[[NSArray alloc] init]];
     for(int i=0; i<self.eqChildren.count; i++) {
-        [self.eqChildren[i] removeFromSuperview];
         [self addSubview:self.eqChildren[i]];
         [self.eqChildren[i] addDescendantsToSubview];
     }
     if(self.eqFormat == LEAF) {
-        [self.eqTextField removeFromSuperview];
         [self addSubview:self.eqTextField];
     }
 }
@@ -218,7 +230,13 @@ double heightRatio = -1;
     if(self.eqFormat == LEAF) {
         
         if([self.eqTextField.stringValue isEqual: @""]) {
-            width = self.frame.size.height;
+            // empty leaf
+            if(self.parent.eqFormat == DIVISION) {
+                width = self.frame.size.height;
+            }
+            else {
+                width = self.frame.size.height/4;
+            }
         }
         else {
             width = [self.eqTextField.attributedStringValue size].width;
@@ -239,6 +257,16 @@ double heightRatio = -1;
     }
     
     self.frame = NSMakeRect(self.frame.origin.x, self.frame.origin.y, width, self.frame.size.height);
+}
+
+- (void) resetAllCursorPointers {
+    for(int i=0; i<self.eqChildren.count; i++) {
+        [self.eqChildren[i] resetAllCursorPointers];
+    }
+    self.childWithStartCursor = -1;
+    self.childWithEndCursor = -1;
+    self.startCursorLocation = -1;
+    self.endCursorLocation = -1;
 }
 
 @end

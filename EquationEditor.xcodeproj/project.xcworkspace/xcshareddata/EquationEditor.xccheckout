@@ -10,31 +10,31 @@
 	<string>EquationEditor</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>5901E425EC3BB72879F9F2F631B1DC27FBA785EA</key>
-		<string>https://github.com/KurtGodel/OpenEquationEditor.git</string>
+		<key>5FEC535DAF1AA6C9BD7952D9B5CB758A249030AF</key>
+		<string>https://github.com/KurtGodel/OpenEquations.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>EquationEditor II/EquationEditor.xcodeproj</string>
+	<string>EquationEditor.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>5901E425EC3BB72879F9F2F631B1DC27FBA785EA</key>
-		<string>../../..</string>
+		<key>5FEC535DAF1AA6C9BD7952D9B5CB758A249030AF</key>
+		<string>../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>https://github.com/KurtGodel/OpenEquationEditor.git</string>
+	<string>https://github.com/KurtGodel/OpenEquations.git</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>5901E425EC3BB72879F9F2F631B1DC27FBA785EA</string>
+	<string>5FEC535DAF1AA6C9BD7952D9B5CB758A249030AF</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>5901E425EC3BB72879F9F2F631B1DC27FBA785EA</string>
+			<string>5FEC535DAF1AA6C9BD7952D9B5CB758A249030AF</string>
 			<key>IDESourceControlWCCName</key>
-			<string>OpenEquationEditor</string>
+			<string>OpenEquations</string>
 		</dict>
 	</array>
 </dict>

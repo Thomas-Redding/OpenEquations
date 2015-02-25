@@ -24,28 +24,28 @@ int cursorCounter = 0;
     double size = 50;
     NSDictionary *attr = @{NSFontAttributeName : [self.fontManager getFont:size]};
     
-    self.eq = [[EquationFieldComponent alloc] initWithFontManagerAndOptions:self.fontManager options:self.options];
+    self.eq = [[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:self.options parent:nil];
     self.eq.eqFormat = NORMAL;
-    [self.eq.eqChildren addObject:[[EquationFieldComponent alloc] initWithFontManagerAndOptions:self.fontManager options:self.options]];
+    [self.eq.eqChildren addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:self.options parent:self.eq]];
     [self.eq.eqChildren[0] setEqTextField:[[EquationTextField alloc] initWithFrame:NSMakeRect(0, 0, 30, 30)]];
     [self.eq.eqChildren[0] setEqFormat:LEAF];
     [self.eq.eqChildren[0] eqTextField].attributedStringValue = [[NSAttributedString alloc] initWithString:@"3∫+" attributes:attr];
     
-    [self.eq.eqChildren addObject:[[EquationFieldComponent alloc] initWithFontManagerAndOptions:self.fontManager options:self.options]];
+    [self.eq.eqChildren addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:self.options parent:self.eq]];
     [self.eq.eqChildren[1] setEqFormat:DIVISION];
-    [[self.eq.eqChildren[1] eqChildren] addObject:[[EquationFieldComponent alloc] initWithFontManagerAndOptions:self.fontManager options:self.options]];
+    [[self.eq.eqChildren[1] eqChildren] addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:self.options parent:self.eq.eqChildren[1]]];
     [[self.eq.eqChildren[1] eqChildren][0] setEqTextField:[[EquationTextField alloc] initWithFrame:NSMakeRect(0, 0, 30, 30)]];
     [[self.eq.eqChildren[1] eqChildren][0] setEqFormat:LEAF];
     // add ∫
     [[self.eq.eqChildren[1] eqChildren][0] eqTextField].attributedStringValue = [[NSAttributedString alloc] initWithString:@"" attributes:attr];
     
-    [[self.eq.eqChildren[1] eqChildren] addObject:[[EquationFieldComponent alloc] initWithFontManagerAndOptions:self.fontManager options:self.options]];
+    [[self.eq.eqChildren[1] eqChildren] addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:self.options parent:self.eq.eqChildren[1]]];
     [[self.eq.eqChildren[1] eqChildren][1] setEqTextField:[[EquationTextField alloc] initWithFrame:NSMakeRect(0, 0, 30, 30)]];
     [[self.eq.eqChildren[1] eqChildren][1] setEqFormat:LEAF];
     // add ∫
     [[self.eq.eqChildren[1] eqChildren][1] eqTextField].attributedStringValue = [[NSAttributedString alloc] initWithString:@"" attributes:attr];
     
-    [self.eq.eqChildren addObject:[[EquationFieldComponent alloc] initWithFontManagerAndOptions:self.fontManager options:self.options]];
+    [self.eq.eqChildren addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:self.options parent:self.eq]];
     [self.eq.eqChildren[2] setEqTextField:[[EquationTextField alloc] initWithFrame:NSMakeRect(0, 0, 30, 30)]];
     [self.eq.eqChildren[2] setEqFormat:LEAF];
     [self.eq.eqChildren[2] eqTextField].attributedStringValue = [[NSAttributedString alloc] initWithString:@"" attributes:attr];
@@ -71,13 +71,11 @@ int cursorCounter = 0;
     if(ratio > 1) {
         ratio = 1;
     }
-    
+    NSLog(@"%f", ratio);
     [self.eq grantSizeRequest: NSMakeRect(1, (self.frame.size.height - self.eq.frame.size.height * ratio)/2, self.eq.frame.size.width * ratio, self.eq.frame.size.height * ratio)];
-    
     [self.eq completeMinorComponentShifts];
-    
     [self adjustCursorLocation];
-    
+    [self.eq addDescendantsToSubview];
 }
 
 - (NSString*) toLaTeX {
@@ -102,6 +100,7 @@ int cursorCounter = 0;
     NSPoint pt = [self.window mouseLocationOutsideOfEventStream];
     pt.x -= self.frame.origin.x;
     pt.y -= self.frame.origin.y;
+    [self.eq resetAllCursorPointers];
     [self setStartCursorToEq:pt.x y:pt.y];
 }
 
@@ -143,9 +142,10 @@ int cursorCounter = 0;
         // insert character
         if(self.eq.childWithEndCursor != -1) {
             // something is currently highlighted
-            [self deleteHighlighted];
         }
-        [self insertCharacter:theEvent.characters];
+        else {
+            [self insertCharacter:theEvent.characters];
+        }
     }
 }
 
@@ -220,13 +220,60 @@ int cursorCounter = 0;
         return;
     }
     
-    NSString *strA = [componentWithCursor.eqTextField.stringValue substringToIndex:componentWithCursor.startCursorLocation];
-    NSString *strB = [componentWithCursor.eqTextField.stringValue substringFromIndex:componentWithCursor.startCursorLocation];
-    NSString *newStr = [[NSString alloc] initWithFormat:@"%@%@%@", strA, str, strB];
-    double fontSize = componentWithCursor.frame.size.height-1;
-    NSDictionary *attr = @{NSFontAttributeName : [self.fontManager getFont:fontSize]};
-    componentWithCursor.eqTextField.attributedStringValue = [[NSAttributedString alloc] initWithString:newStr attributes:attr];
-    componentWithCursor.startCursorLocation++;
+    if([str  isEqual: @"/"]) {
+        NSString *strA;
+        NSString *strB;
+        NSDictionary *attr;
+        
+        if([componentWithCursor.eqTextField.stringValue isEqual: @""]) {
+            strA = @"";
+            strB = @"";
+            attr = @{NSFontAttributeName : [self.fontManager getFont:componentWithCursor.frame.size.height-1]};
+        }
+        else {
+            strA = [componentWithCursor.eqTextField.stringValue substringToIndex:componentWithCursor.startCursorLocation];
+            strB = [componentWithCursor.eqTextField.stringValue substringFromIndex:componentWithCursor.startCursorLocation];
+            attr = [componentWithCursor.eqTextField.attributedStringValue attributesAtIndex:0 effectiveRange:nil];
+        }
+        
+        componentWithCursor.eqFormat = NORMAL;
+        
+        [componentWithCursor.eqChildren addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:self.options parent:componentWithCursor]];
+        [componentWithCursor.eqChildren[0] setEqFormat: LEAF];
+        [componentWithCursor.eqChildren[0] setEqTextField:[[EquationTextField alloc] initWithFrame:NSMakeRect(0, 0, 30, 30)]];
+        [componentWithCursor.eqChildren[0] eqTextField].stringValue = strA;
+        
+        [componentWithCursor.eqChildren addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:self.options parent:componentWithCursor]];
+        [componentWithCursor.eqChildren[1] setEqFormat:DIVISION];
+        [[componentWithCursor.eqChildren[1] eqChildren] addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:self.options parent:componentWithCursor.eqChildren[1]]];
+        [[componentWithCursor.eqChildren[1] eqChildren][0] setEqFormat:LEAF];
+        [[componentWithCursor.eqChildren[1] eqChildren][0] setEqTextField:[[EquationTextField alloc] initWithFrame:NSMakeRect(0, 0, 30, 30)]];
+        [[componentWithCursor.eqChildren[1] eqChildren][0] eqTextField].attributedStringValue = [[NSAttributedString alloc] initWithString:@"" attributes:attr];
+        [[componentWithCursor.eqChildren[1] eqChildren] addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:self.options parent:componentWithCursor.eqChildren[1]]];
+        [[componentWithCursor.eqChildren[1] eqChildren][1] setEqFormat:LEAF];
+        [[componentWithCursor.eqChildren[1] eqChildren][1] setEqTextField:[[EquationTextField alloc] initWithFrame:NSMakeRect(0, 0, 30, 30)]];
+        [[componentWithCursor.eqChildren[1] eqChildren][1] eqTextField].attributedStringValue = [[NSAttributedString alloc] initWithString:@"" attributes:attr];
+        
+        [componentWithCursor.eqChildren addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:self.options parent:componentWithCursor]];
+        [componentWithCursor.eqChildren[2] setEqFormat: LEAF];
+        [componentWithCursor.eqChildren[2] setEqTextField:[[EquationTextField alloc] initWithFrame:NSMakeRect(0, 0, 30, 30)]];
+        [componentWithCursor.eqChildren[2] eqTextField].stringValue = strB;
+        
+        componentWithCursor.startCursorLocation = -1;
+        componentWithCursor.childWithStartCursor = 1;
+        [componentWithCursor.eqChildren[1] setChildWithStartCursor:0];
+        [[componentWithCursor.eqChildren[1] eqChildren][0] setStartCursorLocation:0];
+    }
+    else {
+        // normal character
+        NSString *strA = [componentWithCursor.eqTextField.stringValue substringToIndex:componentWithCursor.startCursorLocation];
+        NSString *strB = [componentWithCursor.eqTextField.stringValue substringFromIndex:componentWithCursor.startCursorLocation];
+        NSString *newStr = [[NSString alloc] initWithFormat:@"%@%@%@", strA, str, strB];
+        double fontSize = componentWithCursor.frame.size.height-1;
+        NSDictionary *attr = @{NSFontAttributeName : [self.fontManager getFont:fontSize]};
+        componentWithCursor.eqTextField.attributedStringValue = [[NSAttributedString alloc] initWithString:newStr attributes:attr];
+        componentWithCursor.startCursorLocation++;
+    }
     [self completeRecalculation];
     [self.cursor show];
 }
@@ -377,9 +424,22 @@ int cursorCounter = 0;
         [self.cursor show];
         BOOL success = [self.eq setStartCursorToEq:x y:y];
         if(success) {
+            [self.eq resetAllCursorPointers];
+            [self.eq setStartCursorToEq:x y:y];
             [self adjustCursorLocation];
         }
         return success;
+    }
+    else if(x >= self.eq.frame.size.width) {
+        [self.eq resetAllCursorPointers];
+        EquationFieldComponent *current = self.eq;
+        while(current.eqChildren.count != 0) {
+            current.childWithStartCursor = (int) current.eqChildren.count - 1;
+            current = current.eqChildren[current.eqChildren.count-1];
+        }
+        current.startCursorLocation = (int) current.eqTextField.stringValue.length;
+        [self adjustCursorLocation];
+        return true;
     }
     return false;
 }
