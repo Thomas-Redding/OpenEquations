@@ -14,4 +14,14 @@
 @property double divisionDecayRate;
 @property double minFontSizeAsRatioOfMaxFontSize;
 
+
+// leafHeight = A * fontSize
+// move EquationTextField up "B * fontSize" pixels
+@property double fontSizeToLeafA;
+@property double fontSizeToLeafB;
+/*
+ latinmodern-math:          A = 1.111   B = 0.000
+ STIXMathJax_Main-Italic:   B = 1.111   B = 0.100
+*/
+
 @end

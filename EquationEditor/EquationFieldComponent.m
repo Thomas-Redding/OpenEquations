@@ -129,10 +129,10 @@ double heightRatio = -1;
     
     if(self.eqFormat == LEAF) {
         NSString *str = self.eqTextField.stringValue;
-        double fontSize = self.frame.size.height * 0.90;
+        double fontSize = self.frame.size.height/self.options.fontSizeToLeafA;
         NSDictionary *attr = @{NSFontAttributeName : [self.fontManager getFont:fontSize]};
         self.eqTextField.attributedStringValue = [[NSAttributedString alloc] initWithString:str attributes:attr];
-        self.eqTextField.frame = NSMakeRect(0, 0, rect.size.width+100, rect.size.height);
+        self.eqTextField.frame = NSMakeRect(0, 0, rect.size.width+100, rect.size.height + fontSize * self.options.fontSizeToLeafB);
     }
     else if(self.eqFormat == NORMAL) {
         double newX = 0;
@@ -184,7 +184,7 @@ double heightRatio = -1;
     if(self.eqFormat == LEAF) {
         self.childWithStartCursor = -1;
         self.startCursorLocation = 0;
-        NSDictionary *attr = @{NSFontAttributeName : [self.fontManager getFont:self.eqTextField.frame.size.height]};
+        NSDictionary *attr = @{NSFontAttributeName : [self.fontManager getFont:self.eqTextField.frame.size.height/self.options.fontSizeToLeafA]};
         double xpos = 0;
         for(int i=0; i<=self.eqTextField.stringValue.length; i++) {
             double width = [[[NSAttributedString alloc] initWithString:[self.eqTextField.stringValue substringToIndex:i] attributes:attr] size].width;
