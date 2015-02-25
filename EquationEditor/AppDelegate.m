@@ -25,10 +25,6 @@
     [self.window.contentView addSubview:self.eqField];
     [self.window makeFirstResponder:self.eqField];
     
-    [self.window.contentView addSubview:self.t];
-    
-    [self.eqField completeRecalculation];
-    
     NSLog(@"%@", [self.eqField toLaTeX]);
 }
 

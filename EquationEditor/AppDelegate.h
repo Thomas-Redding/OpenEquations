@@ -17,6 +17,5 @@
 
 @property EquationField *eqField;
 @property FontManager *fontManager;
-@property NSTextField *t;
 
 @end
