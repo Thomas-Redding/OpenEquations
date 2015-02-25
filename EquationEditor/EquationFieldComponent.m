@@ -82,9 +82,11 @@ double heightRatio = -1;
     }
     else if(self.eqFormat == SUPERSCRIPT) {
         double newFontSize = fontSize * self.options.superscriptDecayRate;
+        
         if(newFontSize < self.options.maxFontSize * self.options.minFontSizeAsRatioOfMaxFontSize) {
             newFontSize = self.options.maxFontSize * self.options.minFontSizeAsRatioOfMaxFontSize;
         }
+        
         [self.eqChildren[0] makeSizeRequest:newFontSize];
     }
     
@@ -139,12 +141,14 @@ double heightRatio = -1;
     self.requestGrantRatio = rect.size.width / self.frame.size.width;
     self.frame = rect;
     
+    self.frame = NSMakeRect(self.frame.origin.x, self.frame.origin.y, self.frame.size.width+100, self.frame.size.height);
+    
     if(self.eqFormat == LEAF) {
         NSString *str = self.eqTextField.stringValue;
         double fontSize = self.frame.size.height/self.options.fontSizeToLeafA;
         NSDictionary *attr = @{NSFontAttributeName : [self.fontManager getFont:fontSize]};
         self.eqTextField.attributedStringValue = [[NSAttributedString alloc] initWithString:str attributes:attr];
-        self.eqTextField.frame = NSMakeRect(0, 0, rect.size.width+100, rect.size.height + fontSize * self.options.fontSizeToLeafB);
+        self.eqTextField.frame = NSMakeRect(0, 0, rect.size.width, rect.size.height + fontSize * self.options.fontSizeToLeafB);
     }
     else if(self.eqFormat == NORMAL) {
         double newX = 0;
@@ -319,7 +323,7 @@ double heightRatio = -1;
             }
         }
         else {
-            width = [self.eqTextField.attributedStringValue size].width;
+            width = [self.eqTextField.attributedStringValue size].width + [self.eqTextField.attributedStringValue size].height*self.options.horizontalPaddingFontSizeRatio;
         }
     }
     else if(self.eqFormat == DIVISION) {

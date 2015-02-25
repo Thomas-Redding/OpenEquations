@@ -14,6 +14,7 @@
 @property double divisionDecayRate;     // ratio between the font-size of the numerator (denominator) to the text surrounding the fraction
 @property double superscriptDecayRate;  // ratio between the font-size of a superscript to the text to its left
 @property double minFontSizeAsRatioOfMaxFontSize;   // how small the smallest font-size can be as a ratio of the largest currently displayed font size
+@property double horizontalPaddingFontSizeRatio;
 
 
 // These two variables are used to make adjustments in formating due to different font choices

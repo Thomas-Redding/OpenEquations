@@ -12,6 +12,56 @@
 
 EquationFieldOptions* options;
 int cursorCounter = 0;
+double minFontSize;
+
+- (EquationField*) initWithFont: (FontManager*) f {
+    self = [super init];
+    self.fontManager = f;
+    options = [[EquationFieldOptions alloc] init];
+    minFontSize = 18;
+    
+    [self setWantsLayer:YES];
+    double shade = 1; // system background: 0.905882353;
+    self.layer.backgroundColor = ([NSColor colorWithCalibratedRed:shade green:shade blue:shade alpha:0.0]).CGColor;
+    
+    double size = 50;
+    NSDictionary *attr = @{NSFontAttributeName : [self.fontManager getFont:size]};
+    
+    self.eq = [[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:options parent:nil];
+    self.eq.eqFormat = NORMAL;
+    [self.eq.eqChildren addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:options parent:self.eq]];
+    [self.eq.eqChildren[0] setEqTextField:[[EquationTextField alloc] initWithFrame:NSMakeRect(0, 0, 30, 30)]];
+    [self.eq.eqChildren[0] setEqFormat:LEAF];
+    [self.eq.eqChildren[0] eqTextField].attributedStringValue = [[NSAttributedString alloc] initWithString:@"3∫+" attributes:attr];
+    
+    [self.eq.eqChildren addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:options parent:self.eq]];
+    [self.eq.eqChildren[1] setEqFormat:DIVISION];
+    [[self.eq.eqChildren[1] eqChildren] addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:options parent:self.eq.eqChildren[1]]];
+    [[self.eq.eqChildren[1] eqChildren][0] setEqTextField:[[EquationTextField alloc] initWithFrame:NSMakeRect(0, 0, 30, 30)]];
+    [[self.eq.eqChildren[1] eqChildren][0] setEqFormat:LEAF];
+    // add ∫
+    [[self.eq.eqChildren[1] eqChildren][0] eqTextField].attributedStringValue = [[NSAttributedString alloc] initWithString:@"" attributes:attr];
+    
+    [[self.eq.eqChildren[1] eqChildren] addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:options parent:self.eq.eqChildren[1]]];
+    [[self.eq.eqChildren[1] eqChildren][1] setEqTextField:[[EquationTextField alloc] initWithFrame:NSMakeRect(0, 0, 30, 30)]];
+    [[self.eq.eqChildren[1] eqChildren][1] setEqFormat:LEAF];
+    // add ∫
+    [[self.eq.eqChildren[1] eqChildren][1] eqTextField].attributedStringValue = [[NSAttributedString alloc] initWithString:@"" attributes:attr];
+    
+    [self.eq.eqChildren addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:options parent:self.eq]];
+    [self.eq.eqChildren[2] setEqTextField:[[EquationTextField alloc] initWithFrame:NSMakeRect(0, 0, 30, 30)]];
+    [self.eq.eqChildren[2] setEqFormat:LEAF];
+    [self.eq.eqChildren[2] eqTextField].attributedStringValue = [[NSAttributedString alloc] initWithString:@"" attributes:attr];
+    
+    [self addSubview:self.eq];
+    [self.eq addDescendantsToSubview];
+    
+    self.cursor = [[EquationCursor alloc] init];
+    [self addSubview:self.cursor];
+    
+    return self;
+}
+
 
 - (void) completeRecalculation {
     // make preliminary size requests
@@ -61,8 +111,8 @@ int cursorCounter = 0;
     options.superscriptDecayRate = newRate;
     [self completeRecalculation];
 }
-- (void) setMinFontSizeAsRatioOfMaxFontSize: (double) newRatio {
-    options.minFontSizeAsRatioOfMaxFontSize = newRatio;
+- (void) setMinFontSize: (double)newSize {
+    minFontSize = newSize;
     [self completeRecalculation];
 }
 
@@ -75,8 +125,8 @@ int cursorCounter = 0;
 - (double) superscriptDecayRate {
     return options.superscriptDecayRate;
 }
-- (double) minFontSizeAsRatioOfMaxFontSize {
-    return options.minFontSizeAsRatioOfMaxFontSize;
+- (double) minFontSize {
+    return minFontSize;
 }
 
 
@@ -153,54 +203,6 @@ int cursorCounter = 0;
 }
 
 // OTHER OVERRIDDEN METHODS
-
-- (EquationField*) initWithFont: (FontManager*) f {
-    self = [super init];
-    self.fontManager = f;
-    options = [[EquationFieldOptions alloc] init];
-    self.minFontSize = 95;
-    
-    [self setWantsLayer:YES];
-    double shade = 1; // system background: 0.905882353;
-    self.layer.backgroundColor = ([NSColor colorWithCalibratedRed:shade green:shade blue:shade alpha:0.0]).CGColor;
-    
-    double size = 50;
-    NSDictionary *attr = @{NSFontAttributeName : [self.fontManager getFont:size]};
-    
-    self.eq = [[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:options parent:nil];
-    self.eq.eqFormat = NORMAL;
-    [self.eq.eqChildren addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:options parent:self.eq]];
-    [self.eq.eqChildren[0] setEqTextField:[[EquationTextField alloc] initWithFrame:NSMakeRect(0, 0, 30, 30)]];
-    [self.eq.eqChildren[0] setEqFormat:LEAF];
-    [self.eq.eqChildren[0] eqTextField].attributedStringValue = [[NSAttributedString alloc] initWithString:@"3∫+" attributes:attr];
-    
-    [self.eq.eqChildren addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:options parent:self.eq]];
-    [self.eq.eqChildren[1] setEqFormat:DIVISION];
-    [[self.eq.eqChildren[1] eqChildren] addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:options parent:self.eq.eqChildren[1]]];
-    [[self.eq.eqChildren[1] eqChildren][0] setEqTextField:[[EquationTextField alloc] initWithFrame:NSMakeRect(0, 0, 30, 30)]];
-    [[self.eq.eqChildren[1] eqChildren][0] setEqFormat:LEAF];
-    // add ∫
-    [[self.eq.eqChildren[1] eqChildren][0] eqTextField].attributedStringValue = [[NSAttributedString alloc] initWithString:@"" attributes:attr];
-    
-    [[self.eq.eqChildren[1] eqChildren] addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:options parent:self.eq.eqChildren[1]]];
-    [[self.eq.eqChildren[1] eqChildren][1] setEqTextField:[[EquationTextField alloc] initWithFrame:NSMakeRect(0, 0, 30, 30)]];
-    [[self.eq.eqChildren[1] eqChildren][1] setEqFormat:LEAF];
-    // add ∫
-    [[self.eq.eqChildren[1] eqChildren][1] eqTextField].attributedStringValue = [[NSAttributedString alloc] initWithString:@"" attributes:attr];
-    
-    [self.eq.eqChildren addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:options parent:self.eq]];
-    [self.eq.eqChildren[2] setEqTextField:[[EquationTextField alloc] initWithFrame:NSMakeRect(0, 0, 30, 30)]];
-    [self.eq.eqChildren[2] setEqFormat:LEAF];
-    [self.eq.eqChildren[2] eqTextField].attributedStringValue = [[NSAttributedString alloc] initWithString:@"" attributes:attr];
-    
-    [self addSubview:self.eq];
-    [self.eq addDescendantsToSubview];
-    
-    self.cursor = [[EquationCursor alloc] init];
-    [self addSubview:self.cursor];
-    
-    return self;
-}
 
 // draw background color
 - (void)drawRect:(NSRect)dirtyRect {

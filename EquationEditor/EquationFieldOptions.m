@@ -16,7 +16,8 @@
     self.maxFontSize = 99;
     self.superscriptDecayRate = 0.6;
     self.divisionDecayRate = 0.8;
-    self.minFontSizeAsRatioOfMaxFontSize = 0.3;
+    self.minFontSizeAsRatioOfMaxFontSize = 0.2;
+    self.horizontalPaddingFontSizeRatio = 0.05;
     
     self.fontSizeToLeafA = 1.11;
     self.fontSizeToLeafB = 0.02;

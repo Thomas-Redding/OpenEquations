@@ -19,20 +19,24 @@
 @property EquationFieldComponent *eq;
 @property FontManager* fontManager;
 @property EquationCursor *cursor;
-@property double minFontSize;
 
 - (EquationField*) initWithFont: (FontManager*) f;
 - (void) completeRecalculation;             // completely redo formating based on self.eq and its descendants
 - (NSString*) toLaTeX;                      // convert the current equation into LaTeX
 
-- (void) setMaxFontSize: (double) newSize;
-- (void) setDivisionDecayRate: (double) newRate;
-- (void) setSuperscriptDecayRate: (double) newRate;
-- (void) setMinFontSizeAsRatioOfMaxFontSize: (double) newRatio;
+// Setting Options
 
 - (double) maxFontSize;                     // the maximum font size that will be displayed (should never exceed 99)
 - (double) divisionDecayRate;               // ratio between the font-size of the numerator (denominator) to the text surrounding the fraction
 - (double) superscriptDecayRate;            // ratio between the font-size of a superscript to the text to its left
-- (double) minFontSizeAsRatioOfMaxFontSize; // how small the smallest font-size can be as a ratio of the largest currently displayed font
+
+// Check EquationFieldOptions for default values
+- (void) setMaxFontSize: (double) newSize;
+- (void) setDivisionDecayRate: (double) newRate;
+- (void) setSuperscriptDecayRate: (double) newRate;
+
+
+- (double) minFontSize;                     // how small the smallest font-size can be
+- (void) setMinFontSize:(double) newSize;
 
 @end
