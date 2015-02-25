@@ -35,10 +35,9 @@ double heightRatio = -1;
 - (void) drawRect:(NSRect)dirtyRect {
     // draw static features
     if(self.eqFormat == DIVISION) {
-        double thickness = fmin([self.eqChildren[0] frame].size.height, [self.eqChildren[1] frame].size.height)/30;
-        // double thickness = self.frame.size.height/50;
+        double thickness = self.relativeSize*self.requestGrantRatio*self.options.maxFontSize/40;
         [[NSColor colorWithCalibratedRed:0.0 green:0.0 blue:0.0 alpha:1.0] setFill];
-        NSRectFill(NSMakeRect(0, [self.eqChildren[1] frame].size.height-thickness, self.frame.size.width, thickness));
+        NSRectFill(NSMakeRect(0, [self.eqChildren[1] frame].size.height-thickness/2, self.frame.size.width, thickness));
     }
     else if(self.eqFormat == LEAF) {
         /*
@@ -65,6 +64,8 @@ double heightRatio = -1;
 }
 
 - (void) makeSizeRequest: (double) fontSize {
+    self.relativeSize = fontSize/self.options.maxFontSize;
+    
     if(self.eqFormat == NORMAL) {
         for(int i=0; i<self.eqChildren.count; i++) {
             [self.eqChildren[i] makeSizeRequest:fontSize];
@@ -123,7 +124,7 @@ double heightRatio = -1;
 }
 
 - (void) grantSizeRequest: (NSRect) rect {
-    double ratio = rect.size.width / self.frame.size.width;
+    self.requestGrantRatio = rect.size.width / self.frame.size.width;
     self.frame = rect;
     
     if(self.eqFormat == LEAF) {
@@ -139,7 +140,7 @@ double heightRatio = -1;
         for(int i=0; i<self.eqChildren.count; i++) {
             NSSize oldSize = [self.eqChildren[i] frame].size;
             double childHeightRatio = [self.eqChildren[i] heightRatio];
-            [self.eqChildren[i] grantSizeRequest:NSMakeRect(newX, centerY-oldSize.height * ratio * childHeightRatio, oldSize.width * ratio, oldSize.height * ratio)];
+            [self.eqChildren[i] grantSizeRequest:NSMakeRect(newX, centerY-oldSize.height * self.requestGrantRatio * childHeightRatio, oldSize.width * self.requestGrantRatio, oldSize.height * self.requestGrantRatio)];
             newX += [self.eqChildren[i] frame].size.width;
         }
         
@@ -147,21 +148,21 @@ double heightRatio = -1;
     else if(self.eqFormat == DIVISION) {
         if([self.eqChildren[0] frame].size.width < [self.eqChildren[1] frame].size.width) {
             // bottom is larger
-            double centerAdjustment = ratio * ([self.eqChildren[1] frame].size.width - [self.eqChildren[0] frame].size.width)/2;
+            double centerAdjustment = self.requestGrantRatio * ([self.eqChildren[1] frame].size.width - [self.eqChildren[0] frame].size.width)/2;
             NSSize oldSize = [self.eqChildren[1] frame].size;
-            [self.eqChildren[1] grantSizeRequest:NSMakeRect(0, 0, oldSize.width * ratio, oldSize.height * ratio)];
+            [self.eqChildren[1] grantSizeRequest:NSMakeRect(0, 0, oldSize.width * self.requestGrantRatio, oldSize.height * self.requestGrantRatio)];
             oldSize = [self.eqChildren[0] frame].size;
             double newY = [self.eqChildren[1] frame].size.height;
-            [self.eqChildren[0] grantSizeRequest:NSMakeRect(centerAdjustment, newY, oldSize.width * ratio, oldSize.height * ratio)];
+            [self.eqChildren[0] grantSizeRequest:NSMakeRect(centerAdjustment, newY, oldSize.width * self.requestGrantRatio, oldSize.height * self.requestGrantRatio)];
         }
         else {
             // top is larger
-            double centerAdjustment = ratio * ([self.eqChildren[0] frame].size.width - [self.eqChildren[1] frame].size.width)/2;
+            double centerAdjustment = self.requestGrantRatio * ([self.eqChildren[0] frame].size.width - [self.eqChildren[1] frame].size.width)/2;
             NSSize oldSize = [self.eqChildren[1] frame].size;
-            [self.eqChildren[1] grantSizeRequest:NSMakeRect(centerAdjustment, 0, oldSize.width * ratio, oldSize.height * ratio)];
+            [self.eqChildren[1] grantSizeRequest:NSMakeRect(centerAdjustment, 0, oldSize.width * self.requestGrantRatio, oldSize.height * self.requestGrantRatio)];
             oldSize = [self.eqChildren[0] frame].size;
             double newY = [self.eqChildren[1] frame].size.height;
-            [self.eqChildren[0] grantSizeRequest:NSMakeRect(0, newY, oldSize.width * ratio, oldSize.height * ratio)];
+            [self.eqChildren[0] grantSizeRequest:NSMakeRect(0, newY, oldSize.width * self.requestGrantRatio, oldSize.height * self.requestGrantRatio)];
         }
     }
 }

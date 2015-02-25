@@ -15,6 +15,8 @@
 @interface EquationFieldComponent : NSView
 
 @property double heightRatio;
+@property double relativeSize;
+@property double requestGrantRatio;
 @property FontManager* fontManager;
 @property EquationFieldOptions* options;
 
