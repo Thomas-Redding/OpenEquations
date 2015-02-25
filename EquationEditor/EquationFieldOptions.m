@@ -11,8 +11,10 @@
 @implementation EquationFieldOptions
 
 - (EquationFieldOptions*) init {
-    // should never exceed 99 is a hard-maximum
+    // set default values
+    
     self.maxFontSize = 99;
+    self.superscriptDecayRate = 0.6;
     self.divisionDecayRate = 0.8;
     self.minFontSizeAsRatioOfMaxFontSize = 0.3;
     

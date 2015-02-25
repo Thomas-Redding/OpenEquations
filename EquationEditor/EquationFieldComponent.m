@@ -66,6 +66,7 @@ double heightRatio = -1;
 - (void) makeSizeRequest: (double) fontSize {
     self.relativeSize = fontSize/self.options.maxFontSize;
     
+    // recurse over children
     if(self.eqFormat == NORMAL) {
         for(int i=0; i<self.eqChildren.count; i++) {
             [self.eqChildren[i] makeSizeRequest:fontSize];
@@ -76,12 +77,18 @@ double heightRatio = -1;
         if(newFontSize < self.options.maxFontSize * self.options.minFontSizeAsRatioOfMaxFontSize) {
             newFontSize = self.options.maxFontSize * self.options.minFontSizeAsRatioOfMaxFontSize;
         }
-        
-        for(int i=0; i<self.eqChildren.count; i++) {
-            [self.eqChildren[i] makeSizeRequest:newFontSize];
+        [self.eqChildren[0] makeSizeRequest:newFontSize];
+        [self.eqChildren[1] makeSizeRequest:newFontSize];
+    }
+    else if(self.eqFormat == SUPERSCRIPT) {
+        double newFontSize = fontSize * self.options.superscriptDecayRate;
+        if(newFontSize < self.options.maxFontSize * self.options.minFontSizeAsRatioOfMaxFontSize) {
+            newFontSize = self.options.maxFontSize * self.options.minFontSizeAsRatioOfMaxFontSize;
         }
+        [self.eqChildren[0] makeSizeRequest:newFontSize];
     }
     
+    // do own calculations
     if(self.eqFormat == LEAF) {
         NSString *str = self.eqTextField.stringValue;
         NSDictionary *attr = @{NSFontAttributeName : [self.fontManager getFont:fontSize]};
@@ -90,7 +97,7 @@ double heightRatio = -1;
         self.heightRatio = 0.5;
         if([self.eqTextField.stringValue isEqual: @""]) {
             // empty leaf
-            if(self.parent.eqFormat == DIVISION) {
+            if(self.parent.eqFormat == DIVISION || self.parent.eqFormat == SUPERSCRIPT) {
                 size.width = fontSize;
             }
             else {
@@ -98,6 +105,17 @@ double heightRatio = -1;
             }
         }
         self.frame = NSMakeRect(self.frame.origin.x, self.frame.origin.y, size.width, fontSize);
+    }
+    else if(self.eqFormat == DIVISION) {
+        double width = fmax([self.eqChildren[0] frame].size.width, [self.eqChildren[1] frame].size.width);
+        double height = [self.eqChildren[0] frame].size.height + [self.eqChildren[1] frame].size.height;
+        self.heightRatio = [self.eqChildren[1] frame].size.height / height;
+        self.frame = NSMakeRect(self.frame.origin.x, self.frame.origin.y, width, height);
+    }
+    else if(self.eqFormat == SUPERSCRIPT) {
+        double childWidth = [self.eqChildren[0] frame].size.width;
+        double childHeight = [self.eqChildren[0] frame].size.height;
+        self.frame = NSMakeRect(0, 0, childWidth, childHeight);
     }
     else if(self.eqFormat == NORMAL) {
         double width = 0;
@@ -114,12 +132,6 @@ double heightRatio = -1;
         }
         self.heightRatio = heightBelow/(heightAbove+heightBelow);
         self.frame = NSMakeRect(self.frame.origin.x, self.frame.origin.y, width, heightAbove+heightBelow);
-    }
-    else if(self.eqFormat == DIVISION) {
-        double width = fmax([self.eqChildren[0] frame].size.width, [self.eqChildren[1] frame].size.width);
-        double height = [self.eqChildren[0] frame].size.height + [self.eqChildren[1] frame].size.height;
-        self.heightRatio = [self.eqChildren[1] frame].size.height / height;
-        self.frame = NSMakeRect(self.frame.origin.x, self.frame.origin.y, width, height);
     }
 }
 
@@ -138,12 +150,25 @@ double heightRatio = -1;
         double newX = 0;
         double centerY = self.heightRatio * self.frame.size.height;
         for(int i=0; i<self.eqChildren.count; i++) {
-            NSSize oldSize = [self.eqChildren[i] frame].size;
-            double childHeightRatio = [self.eqChildren[i] heightRatio];
-            [self.eqChildren[i] grantSizeRequest:NSMakeRect(newX, centerY-oldSize.height * self.requestGrantRatio * childHeightRatio, oldSize.width * self.requestGrantRatio, oldSize.height * self.requestGrantRatio)];
-            newX += [self.eqChildren[i] frame].size.width;
+            if([self.eqChildren[i] eqFormat] == SUPERSCRIPT) {
+                NSSize oldSize = [self.eqChildren[i] frame].size;
+                double heightOfLastChild = 0;
+                if(i == 0) {
+                    NSLog(@"ERROR - SUPERSCRIPT IS RIGHT-MOST CHILD");
+                }
+                else {
+                    heightOfLastChild = [self.eqChildren[i-1] frame].size.height;
+                }
+                [self.eqChildren[i] grantSizeRequest:NSMakeRect(newX, heightOfLastChild/2, oldSize.width * self.requestGrantRatio, oldSize.height * self.requestGrantRatio)];
+                newX += [self.eqChildren[i] frame].size.width;
+            }
+            else {
+                NSSize oldSize = [self.eqChildren[i] frame].size;
+                double childHeightRatio = [self.eqChildren[i] heightRatio];
+                [self.eqChildren[i] grantSizeRequest:NSMakeRect(newX, centerY-oldSize.height * self.requestGrantRatio * childHeightRatio, oldSize.width * self.requestGrantRatio, oldSize.height * self.requestGrantRatio)];
+                newX += [self.eqChildren[i] frame].size.width;
+            }
         }
-        
     }
     else if(self.eqFormat == DIVISION) {
         if([self.eqChildren[0] frame].size.width < [self.eqChildren[1] frame].size.width) {
@@ -164,6 +189,11 @@ double heightRatio = -1;
             double newY = [self.eqChildren[1] frame].size.height;
             [self.eqChildren[0] grantSizeRequest:NSMakeRect(0, newY, oldSize.width * self.requestGrantRatio, oldSize.height * self.requestGrantRatio)];
         }
+    }
+    else if(self.eqFormat == SUPERSCRIPT) {
+        double centerY = self.heightRatio * self.frame.size.height;
+        NSSize oldSize = [self.eqChildren[0] frame].size;
+        [self.eqChildren[0] grantSizeRequest:NSMakeRect(0, centerY, oldSize.width * self.requestGrantRatio, oldSize.height * self.requestGrantRatio)];
     }
 }
 
@@ -220,6 +250,16 @@ double heightRatio = -1;
             }
         }
     }
+    else if(self.eqFormat == SUPERSCRIPT) {
+        BOOL success = [self.eqChildren[0] setStartCursorToEq:x y:y];
+        if(success) {
+            self.childWithStartCursor = 0;
+            return true;
+        }
+        else {
+            self.childWithStartCursor = -1;
+        }
+    }
     else if(self.eqFormat == NORMAL){
         for(int i=0; i<self.eqChildren.count; i++) {
             if(x >= [self.eqChildren[i] frame].origin.x && x <= [self.eqChildren[i] frame].origin.x + [self.eqChildren[i] frame].size.width) {
@@ -251,6 +291,9 @@ double heightRatio = -1;
     else if(self.eqFormat == DIVISION) {
         return [NSString stringWithFormat:@"\\frac{%@}{%@}",[self.eqChildren[0] toLaTeX], [self.eqChildren[1] toLaTeX]];
     }
+    else if(self.eqFormat == SUPERSCRIPT) {
+        return [NSString stringWithFormat:@"^{%@}",[self.eqChildren[0] toLaTeX]];
+    }
     else {
         // error
         return @"";
@@ -265,10 +308,9 @@ double heightRatio = -1;
     
     double width = 0;
     if(self.eqFormat == LEAF) {
-        
         if([self.eqTextField.stringValue isEqual: @""]) {
             // empty leaf
-            if(self.parent.eqFormat == DIVISION) {
+            if(self.parent.eqFormat == DIVISION || self.parent.eqFormat == SUPERSCRIPT) {
                 width = self.frame.size.height;
             }
             else {
@@ -279,18 +321,18 @@ double heightRatio = -1;
             width = [self.eqTextField.attributedStringValue size].width;
         }
     }
+    else if(self.eqFormat == DIVISION) {
+        width = fmax([self.eqChildren[0] frame].size.width, [self.eqChildren[1] frame].size.width);
+    }
+    else if(self.eqFormat == SUPERSCRIPT) {
+        width = [self.eqChildren[0] frame].size.width;
+    }
     else if(self.eqFormat == NORMAL) {
         for(int i=0; i<self.eqChildren.count; i++) {
             NSRect frame = [self.eqChildren[i] frame];
             [self.eqChildren[i] setFrame:NSMakeRect(width, frame.origin.y, frame.size.width, frame.size.height)];
             width += [self.eqChildren[i] frame].size.width;
         }
-    }
-    else if(self.eqFormat == DIVISION) {
-        width = fmax([self.eqChildren[0] frame].size.width, [self.eqChildren[1] frame].size.width);
-    }
-    else {
-        // error
     }
     
     self.frame = NSMakeRect(self.frame.origin.x, self.frame.origin.y, width, self.frame.size.height);

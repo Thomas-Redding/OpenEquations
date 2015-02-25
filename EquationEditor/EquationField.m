@@ -167,6 +167,12 @@ int cursorCounter = 0;
     }
 }
 
+- (void) rightMouseDown: (NSEvent*) theEvent {
+    // mouse drop-down menu
+}
+
+// OSX INTERACTION
+
 - (BOOL) acceptsFirstResponder {
     return YES;
 }
@@ -177,10 +183,6 @@ int cursorCounter = 0;
 
 - (BOOL) resignFirstResponder {
     return YES;
-}
-
-- (void) rightMouseDown: (NSEvent*) theEvent {
-    // mouse drop-down menu
 }
 
 - (void) resetCursorRects
@@ -243,7 +245,7 @@ int cursorCounter = 0;
         return;
     }
     
-    if([str  isEqual: @"/"]) {
+    if([str isEqual: @"/"]) {
         NSString *strA;
         NSString *strB;
         NSDictionary *attr;
@@ -276,6 +278,47 @@ int cursorCounter = 0;
         [[componentWithCursor.eqChildren[1] eqChildren][1] setEqFormat:LEAF];
         [[componentWithCursor.eqChildren[1] eqChildren][1] setEqTextField:[[EquationTextField alloc] initWithFrame:NSMakeRect(0, 0, 30, 30)]];
         [[componentWithCursor.eqChildren[1] eqChildren][1] eqTextField].attributedStringValue = [[NSAttributedString alloc] initWithString:@"" attributes:attr];
+        
+        [componentWithCursor.eqChildren addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:self.options parent:componentWithCursor]];
+        [componentWithCursor.eqChildren[2] setEqFormat: LEAF];
+        [componentWithCursor.eqChildren[2] setEqTextField:[[EquationTextField alloc] initWithFrame:NSMakeRect(0, 0, 30, 30)]];
+        [componentWithCursor.eqChildren[2] eqTextField].stringValue = strB;
+        
+        componentWithCursor.startCursorLocation = -1;
+        componentWithCursor.childWithStartCursor = 1;
+        [componentWithCursor.eqChildren[1] setChildWithStartCursor:0];
+        [[componentWithCursor.eqChildren[1] eqChildren][0] setStartCursorLocation:0];
+    }
+    else if([str isEqual: @"^"]) {
+        
+        NSString *strA;
+        NSString *strB;
+        NSDictionary *attr;
+        
+        if([componentWithCursor.eqTextField.stringValue isEqual: @""]) {
+            strA = @"";
+            strB = @"";
+            attr = @{NSFontAttributeName : [self.fontManager getFont:componentWithCursor.frame.size.height-1]};
+        }
+        else {
+            strA = [componentWithCursor.eqTextField.stringValue substringToIndex:componentWithCursor.startCursorLocation];
+            strB = [componentWithCursor.eqTextField.stringValue substringFromIndex:componentWithCursor.startCursorLocation];
+            attr = [componentWithCursor.eqTextField.attributedStringValue attributesAtIndex:0 effectiveRange:nil];
+        }
+        
+        componentWithCursor.eqFormat = NORMAL;
+        
+        [componentWithCursor.eqChildren addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:self.options parent:componentWithCursor]];
+        [componentWithCursor.eqChildren[0] setEqFormat: LEAF];
+        [componentWithCursor.eqChildren[0] setEqTextField:[[EquationTextField alloc] initWithFrame:NSMakeRect(0, 0, 30, 30)]];
+        [componentWithCursor.eqChildren[0] eqTextField].stringValue = strA;
+        
+        [componentWithCursor.eqChildren addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:self.options parent:componentWithCursor]];
+        [componentWithCursor.eqChildren[1] setEqFormat:SUPERSCRIPT];
+        [[componentWithCursor.eqChildren[1] eqChildren] addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:self.options parent:componentWithCursor.eqChildren[1]]];
+        [[componentWithCursor.eqChildren[1] eqChildren][0] setEqFormat:LEAF];
+        [[componentWithCursor.eqChildren[1] eqChildren][0] setEqTextField:[[EquationTextField alloc] initWithFrame:NSMakeRect(0, 0, 30, 30)]];
+        [[componentWithCursor.eqChildren[1] eqChildren][0] eqTextField].attributedStringValue = [[NSAttributedString alloc] initWithString:@"" attributes:attr];
         
         [componentWithCursor.eqChildren addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:self.options parent:componentWithCursor]];
         [componentWithCursor.eqChildren[2] setEqFormat: LEAF];
