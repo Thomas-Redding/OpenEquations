@@ -65,9 +65,22 @@ double heightRatio = -1;
 }
 
 - (void) makeSizeRequest: (double) fontSize {
-    for(int i=0; i<self.eqChildren.count; i++) {
-        [self.eqChildren[i] makeSizeRequest:fontSize];
+    if(self.eqFormat == NORMAL) {
+        for(int i=0; i<self.eqChildren.count; i++) {
+            [self.eqChildren[i] makeSizeRequest:fontSize];
+        }
     }
+    else if(self.eqFormat == DIVISION) {
+        double newFontSize = fontSize * self.options.divisionDecayRate;
+        if(newFontSize < self.options.maxFontSize * self.options.minFontSizeAsRatioOfMaxFontSize) {
+            newFontSize = self.options.maxFontSize * self.options.minFontSizeAsRatioOfMaxFontSize;
+        }
+        
+        for(int i=0; i<self.eqChildren.count; i++) {
+            [self.eqChildren[i] makeSizeRequest:newFontSize];
+        }
+    }
+    
     if(self.eqFormat == LEAF) {
         NSString *str = self.eqTextField.stringValue;
         NSDictionary *attr = @{NSFontAttributeName : [self.fontManager getFont:fontSize]};

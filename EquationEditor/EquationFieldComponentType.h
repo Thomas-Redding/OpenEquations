@@ -16,7 +16,7 @@ typedef enum {
     DIVISION,
     SUMMATION,
     INTEGRATION,
-    EXPONENT,
+    SUPERSCRIPT,
     SQUAREROOT,
     LOGBASE
 } EquationFieldComponentType;

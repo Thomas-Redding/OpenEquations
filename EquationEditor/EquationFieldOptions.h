@@ -11,5 +11,8 @@
 @interface EquationFieldOptions : NSObject
 
 @property double maxFontSize;
+@property double divisionDecayRate;
+@property double minFontSizeAsRatioOfMaxFontSize;
+@property double bufferFontSizeRatio;
 
 @end
