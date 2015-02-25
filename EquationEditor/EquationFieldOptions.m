@@ -16,8 +16,8 @@
     self.divisionDecayRate = 0.8;
     self.minFontSizeAsRatioOfMaxFontSize = 0.3;
     
-    self.fontSizeToLeafA = 1.111111111;
-    self.fontSizeToLeafB = 0.0;
+    self.fontSizeToLeafA = 1.11;
+    self.fontSizeToLeafB = 0.02;
     return self;
 }
 

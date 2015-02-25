@@ -183,6 +183,11 @@ int cursorCounter = 0;
     // mouse drop-down menu
 }
 
+- (void) resetCursorRects
+{
+    [self addCursorRect:self.frame cursor:[NSCursor IBeamCursor]];
+}
+
 // OTHER (HELPER) FUNCTIONS
 
 - (void) deleteKeyPressed {
