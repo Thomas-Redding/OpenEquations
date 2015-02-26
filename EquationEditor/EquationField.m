@@ -54,12 +54,14 @@ double minFontSize;
         options.minFontSizeAsRatioOfMaxFontSize = 1;
     }
     
+    /*
     // make final size requests
     [self.eq makeSizeRequest:options.maxFontSize];
     ratio = fmin(self.frame.size.width/self.eq.frame.size.width, self.frame.size.height/self.eq.frame.size.height);
     if(ratio > 1) {
         ratio = 1;
     }
+    */
     
     // finish recalculation
     [self.eq grantSizeRequest: NSMakeRect(1, (self.frame.size.height - self.eq.frame.size.height * ratio)/2, self.eq.frame.size.width * ratio, self.eq.frame.size.height * ratio)];
@@ -95,6 +97,10 @@ double minFontSize;
     options.superscriptDecayRate = newRate;
     [self completeRecalculation];
 }
+- (void) setSqarerootDecayRate: (double) newRate {
+    options.squarerootDecayRate = newRate;
+    [self completeRecalculation];
+}
 - (void) setMinFontSize: (double)newSize {
     minFontSize = newSize;
     [self completeRecalculation];
@@ -109,10 +115,12 @@ double minFontSize;
 - (double) superscriptDecayRate {
     return options.superscriptDecayRate;
 }
+- (double) squarerootDecayRate {
+    return options.squarerootDecayRate;
+}
 - (double) minFontSize {
     return minFontSize;
 }
-
 
 
 // USER INTERACTION
@@ -347,6 +355,56 @@ double minFontSize;
         [[componentWithCursor.eqChildren[1] eqChildren][0] setEqFormat:LEAF];
         [[componentWithCursor.eqChildren[1] eqChildren][0] setEqTextField:[[EquationTextField alloc] initWithFrame:NSMakeRect(0, 0, 30, 30)]];
         [[componentWithCursor.eqChildren[1] eqChildren][0] eqTextField].attributedStringValue = [[NSAttributedString alloc] initWithString:@"" attributes:attr];
+        
+        [componentWithCursor.eqChildren addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:options parent:componentWithCursor]];
+        [componentWithCursor.eqChildren[2] setEqFormat: LEAF];
+        [componentWithCursor.eqChildren[2] setEqTextField:[[EquationTextField alloc] initWithFrame:NSMakeRect(0, 0, 30, 30)]];
+        [componentWithCursor.eqChildren[2] eqTextField].stringValue = strB;
+        
+        componentWithCursor.startCursorLocation = -1;
+        componentWithCursor.childWithStartCursor = 1;
+        [componentWithCursor.eqChildren[1] setChildWithStartCursor:0];
+        [[componentWithCursor.eqChildren[1] eqChildren][0] setStartCursorLocation:0];
+        
+        [self.eq simplifyStructure];
+    }
+    else if([str isEqual: @"√"]) {
+        
+        
+        NSString *strA;
+        NSString *strB;
+        NSDictionary *attr;
+        
+        if([componentWithCursor.eqTextField.stringValue isEqual: @""]) {
+            strA = @"";
+            strB = @"";
+            attr = @{NSFontAttributeName : [self.fontManager getFont:componentWithCursor.frame.size.height-1]};
+        }
+        else {
+            strA = [componentWithCursor.eqTextField.stringValue substringToIndex:componentWithCursor.startCursorLocation];
+            strB = [componentWithCursor.eqTextField.stringValue substringFromIndex:componentWithCursor.startCursorLocation];
+            attr = [componentWithCursor.eqTextField.attributedStringValue attributesAtIndex:0 effectiveRange:nil];
+        }
+        
+        componentWithCursor.eqFormat = NORMAL;
+        
+        [componentWithCursor.eqChildren addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:options parent:componentWithCursor]];
+        [componentWithCursor.eqChildren[0] setEqFormat: LEAF];
+        [componentWithCursor.eqChildren[0] setEqTextField:[[EquationTextField alloc] initWithFrame:NSMakeRect(0, 0, 30, 30)]];
+        [componentWithCursor.eqChildren[0] eqTextField].stringValue = strA;
+        
+        [componentWithCursor.eqChildren addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:options parent:componentWithCursor]];
+        [componentWithCursor.eqChildren[1] setEqFormat:SQUAREROOT];
+        [[componentWithCursor.eqChildren[1] eqChildren] addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:options parent:componentWithCursor.eqChildren[1]]];
+        [[componentWithCursor.eqChildren[1] eqChildren][0] setEqFormat:LEAF];
+        [[componentWithCursor.eqChildren[1] eqChildren][0] setEqTextField:[[EquationTextField alloc] initWithFrame:NSMakeRect(0, 0, 30, 30)]];
+        [[componentWithCursor.eqChildren[1] eqChildren][0] eqTextField].attributedStringValue = [[NSAttributedString alloc] initWithString:@"" attributes:attr];
+        
+        NSString *pathToRootImage = [[NSString alloc] initWithString:[[NSBundle mainBundle] pathForImageResource:@"root.png"]];
+        NSImageView *rootImageView = [[NSImageView alloc] initWithFrame:NSMakeRect(0, 0, 50, 50)];
+        NSImage *rootImage = [[NSImage alloc] initWithContentsOfFile:pathToRootImage];
+        [rootImageView setImage:rootImage];
+        [componentWithCursor.eqChildren[1] setEqImageView:rootImageView];
         
         [componentWithCursor.eqChildren addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:options parent:componentWithCursor]];
         [componentWithCursor.eqChildren[2] setEqFormat: LEAF];

@@ -39,6 +39,13 @@ double heightRatio = -1;
         [[NSColor colorWithCalibratedRed:0.0 green:0.0 blue:0.0 alpha:1.0] setFill];
         NSRectFill(NSMakeRect(0, [self.eqChildren[1] frame].size.height-thickness/2, self.frame.size.width, thickness));
     }
+    else if(self.eqFormat == SQUAREROOT) {
+        double thickness = self.frame.size.height/40;
+        double x = self.frame.size.height * (self.eqImageView.image.size.width/self.eqImageView.image.size.height);
+        x -= self.frame.size.height * 0.03;
+        [[NSColor colorWithCalibratedRed:0.0 green:0.0 blue:0.0 alpha:1.0] setFill];
+        NSRectFill(NSMakeRect(x, self.frame.size.height-thickness, self.frame.size.width-x, thickness));
+    }
     else if(self.eqFormat == LEAF) {
         /*
         [[NSColor colorWithCalibratedRed:1.0 green:0.0 blue:0.0 alpha:0.5] setFill];
@@ -82,11 +89,16 @@ double heightRatio = -1;
     }
     else if(self.eqFormat == SUPERSCRIPT) {
         double newFontSize = fontSize * self.options.superscriptDecayRate;
-        
         if(newFontSize < self.options.maxFontSize * self.options.minFontSizeAsRatioOfMaxFontSize) {
             newFontSize = self.options.maxFontSize * self.options.minFontSizeAsRatioOfMaxFontSize;
         }
-        
+        [self.eqChildren[0] makeSizeRequest:newFontSize];
+    }
+    else if(self.eqFormat == SQUAREROOT) {
+        double newFontSize = fontSize * self.options.squarerootDecayRate;
+        if(newFontSize < self.options.maxFontSize * self.options.minFontSizeAsRatioOfMaxFontSize) {
+            newFontSize = self.options.maxFontSize * self.options.minFontSizeAsRatioOfMaxFontSize;
+        }
         [self.eqChildren[0] makeSizeRequest:newFontSize];
     }
     
@@ -99,7 +111,7 @@ double heightRatio = -1;
         self.heightRatio = 0.5;
         if([self.eqTextField.stringValue isEqual: @""]) {
             // empty leaf
-            if(self.parent.eqFormat == DIVISION || self.parent.eqFormat == SUPERSCRIPT) {
+            if(self.parent.eqFormat == DIVISION || self.parent.eqFormat == SUPERSCRIPT || self.parent.eqFormat == SQUAREROOT) {
                 size.width = fontSize;
             }
             else {
@@ -117,7 +129,16 @@ double heightRatio = -1;
     else if(self.eqFormat == SUPERSCRIPT) {
         double childWidth = [self.eqChildren[0] frame].size.width;
         double childHeight = [self.eqChildren[0] frame].size.height;
+        self.heightRatio = 0;
         self.frame = NSMakeRect(0, 0, childWidth, childHeight);
+    }
+    else if(self.eqFormat == SQUAREROOT) {
+        double childWidth = [self.eqChildren[0] frame].size.width;
+        double childHeight = [self.eqChildren[0] frame].size.height;
+        double rootImageHeight = childHeight*(1+self.options.squarerootVerticalPaddingFontSizeRatio);
+        double rootImageWidth = (self.eqImageView.image.size.width/self.eqImageView.image.size.height) * rootImageHeight;
+        self.heightRatio = 0.5;
+        self.frame = NSMakeRect(0, 0, childWidth+rootImageWidth, rootImageHeight);
     }
     else if(self.eqFormat == NORMAL) {
         double width = 0;
@@ -140,17 +161,17 @@ double heightRatio = -1;
 - (void) grantSizeRequest: (NSRect) rect {
     self.requestGrantRatio = rect.size.width / self.frame.size.width;
     self.frame = rect;
-    self.frame = NSMakeRect(self.frame.origin.x, self.frame.origin.y, self.frame.size.width+100, self.frame.size.height);
     
     if(self.eqFormat == LEAF) {
         NSString *str = self.eqTextField.stringValue;
         double fontSize = self.frame.size.height/self.options.fontSizeToLeafA;
         NSDictionary *attr = @{NSFontAttributeName : [self.fontManager getFont:fontSize]};
         self.eqTextField.attributedStringValue = [[NSAttributedString alloc] initWithString:str attributes:attr];
-        self.eqTextField.frame = NSMakeRect(0, 0, rect.size.width + 100, rect.size.height + fontSize * self.options.fontSizeToLeafB);
+        self.eqTextField.frame = NSMakeRect(0, 0, rect.size.width, rect.size.height + fontSize * self.options.fontSizeToLeafB);
     }
     else if(self.eqFormat == NORMAL) {
         double newX = 0;
+        
         double centerY = self.heightRatio * self.frame.size.height;
         for(int i=0; i<self.eqChildren.count; i++) {
             if([self.eqChildren[i] eqFormat] == SUPERSCRIPT) {
@@ -198,6 +219,13 @@ double heightRatio = -1;
         NSSize oldSize = [self.eqChildren[0] frame].size;
         [self.eqChildren[0] grantSizeRequest:NSMakeRect(0, centerY, oldSize.width * self.requestGrantRatio, oldSize.height * self.requestGrantRatio)];
     }
+    else if(self.eqFormat == SQUAREROOT) {
+        double rootImageHeight = self.frame.size.height;
+        double rootImageWidth = (self.eqImageView.image.size.width/self.eqImageView.image.size.height) * rootImageHeight;
+        double childHeight = self.frame.size.height * self.requestGrantRatio / (1 + self.options.squarerootVerticalPaddingFontSizeRatio);
+        [self.eqChildren[0] grantSizeRequest:NSMakeRect(rootImageWidth, 0, self.frame.size.width - rootImageWidth, childHeight)];
+        self.eqImageView.frame = NSMakeRect(0, 0, rootImageWidth, rootImageHeight);
+    }
 }
 
 - (void) addDescendantsToSubview {
@@ -206,8 +234,12 @@ double heightRatio = -1;
         [self addSubview:self.eqChildren[i]];
         [self.eqChildren[i] addDescendantsToSubview];
     }
+    
     if(self.eqFormat == LEAF) {
         [self addSubview:self.eqTextField];
+    }
+    else if(self.eqFormat == SQUAREROOT) {
+        [self addSubview:self.eqImageView];
     }
 }
 
@@ -264,6 +296,16 @@ double heightRatio = -1;
             self.childWithStartCursor = -1;
         }
     }
+    else if(self.eqFormat == SQUAREROOT) {
+        BOOL success = [self.eqChildren[0] setStartCursorToEq:x y:y];
+        if(success) {
+            self.childWithStartCursor = 0;
+            return true;
+        }
+        else {
+            self.childWithStartCursor = -1;
+        }
+    }
     else if(self.eqFormat == NORMAL){
         for(int i=0; i<self.eqChildren.count; i++) {
             if(x >= [self.eqChildren[i] frame].origin.x && x <= [self.eqChildren[i] frame].origin.x + [self.eqChildren[i] frame].size.width) {
@@ -298,6 +340,9 @@ double heightRatio = -1;
     else if(self.eqFormat == SUPERSCRIPT) {
         return [NSString stringWithFormat:@"^{%@}",[self.eqChildren[0] toLaTeX]];
     }
+    else if(self.eqFormat == SQUAREROOT) {
+        return [NSString stringWithFormat:@"\\sqrt{%@}",[self.eqChildren[0] toLaTeX]];
+    }
     else {
         // error
         return @"";
@@ -314,7 +359,7 @@ double heightRatio = -1;
     if(self.eqFormat == LEAF) {
         if([self.eqTextField.stringValue isEqual: @""]) {
             // empty leaf
-            if(self.parent.eqFormat == DIVISION || self.parent.eqFormat == SUPERSCRIPT) {
+            if(self.parent.eqFormat == DIVISION || self.parent.eqFormat == SUPERSCRIPT || self.parent.eqFormat == SQUAREROOT) {
                 width = self.frame.size.height;
             }
             else {
@@ -330,6 +375,14 @@ double heightRatio = -1;
     }
     else if(self.eqFormat == SUPERSCRIPT) {
         width = [self.eqChildren[0] frame].size.width;
+    }
+    else if(self.eqFormat == SQUAREROOT) {
+        double childWidth = [self.eqChildren[0] frame].size.width;
+        double childHeight = [self.eqChildren[0] frame].size.height;
+        double rootImageHeight = childHeight*(1+self.options.squarerootVerticalPaddingFontSizeRatio);
+        double rootImageWidth = (self.eqImageView.image.size.width/self.eqImageView.image.size.height) * rootImageHeight;
+        self.frame = NSMakeRect(0, 0, childWidth+rootImageWidth, rootImageHeight);
+        width = childWidth + rootImageWidth;
     }
     else if(self.eqFormat == NORMAL) {
         for(int i=0; i<self.eqChildren.count; i++) {
@@ -395,6 +448,14 @@ double heightRatio = -1;
         }
     }
     */
+}
+
+- (void) addHundredToWidth {
+    for(int i=0; i<self.eqChildren.count; i++) {
+        [self.eqChildren[i] addHundredToWidth];
+    }
+    self.frame = NSMakeRect(self.frame.origin.x, self.frame.origin.y, self.frame.size.width+100, self.frame.size.height);
+    self.eqTextField.frame = NSMakeRect(self.eqTextField.frame.origin.x, self.eqTextField.frame.origin.y, self.eqTextField.frame.size.width+100, self.eqTextField.frame.size.height);
 }
 
 @end

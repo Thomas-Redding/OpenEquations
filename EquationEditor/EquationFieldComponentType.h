@@ -14,10 +14,11 @@ typedef enum {
     LEAF,
     NORMAL,
     DIVISION,
-    SUMMATION,
-    INTEGRATION,
     SUPERSCRIPT,
     SQUAREROOT,
+    
+    SUMMATION,
+    INTEGRATION,
     LOGBASE
 } EquationFieldComponentType;
 
