@@ -103,7 +103,7 @@ double heightRatio = -1;
                 size.width = fontSize;
             }
             else {
-                size.width = fontSize/4;
+                size.width = 0;
             }
         }
         self.frame = NSMakeRect(self.frame.origin.x, self.frame.origin.y, size.width, fontSize);
@@ -353,6 +353,48 @@ double heightRatio = -1;
     self.endCursorLocation = -1;
     if(self.eqFormat == LEAF) {
         [self.eqTextField setContainsCursor:false];
+    }
+}
+
+- (void) simplifyStructure {
+    for(int i=1; i<self.eqChildren.count; i++) {
+        [self.eqChildren[i] simplifyStructure];
+    }
+        
+    if(self.eqFormat == NORMAL) {
+        /*
+        // combine with child NORMALs
+        for(int i=0; i<self.eqChildren.count; i++) {
+            if([self.eqChildren[i] eqFormat] == NORMAL) {
+                // combine with child NORMALs
+                if(self.childWithStartCursor == i) {
+                    self.childWithStartCursor += [self.eqChildren[i] childWithStartCursor] + 1;
+                }
+                else if(self.childWithStartCursor > i) {
+                    self.childWithStartCursor += (int) [self.eqChildren[i] eqChildren].count;
+                }
+                
+                for(int j=0; j<[self.eqChildren[i] eqChildren].count; j++) {
+                    [self.eqChildren insertObject:[self.eqChildren[i] eqChildren][j] atIndex:i+j+1];
+                }
+                [self.eqChildren removeObjectAtIndex:i];
+                i--;
+            }
+        }
+        
+        // combine adjacent LEAFs
+        for(int i=1; i<self.eqChildren.count; i++) {
+            if([self.eqChildren[i-1] eqFormat] == LEAF && [self.eqChildren[i] eqFormat] == LEAF) {
+                // combine adjacent LEAFs
+                NSMutableString *str = [[NSMutableString alloc] initWithString:[self.eqChildren[i-1] eqTextField].stringValue];
+                [str appendString:[self.eqChildren[i] eqTextField].stringValue];
+                NSDictionary *attr = @{NSFontAttributeName : [self.fontManager getFont:self.eqTextField.frame.size.height/self.options.fontSizeToLeafA]};
+                [self.eqChildren[i-1] eqTextField].attributedStringValue = [[NSAttributedString alloc] initWithString:str attributes:attr];
+                [self.eqChildren removeObjectAtIndex:i];
+                i--;
+            }
+        }
+         */
     }
 }
 

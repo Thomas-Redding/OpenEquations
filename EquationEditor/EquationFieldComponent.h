@@ -61,7 +61,7 @@
 // erase the integers that say where the cursor (or highlighting endpoints) currently is (are)
 - (void) resetAllCursorPointers;
 
-
+- (void) simplifyStructure;
 
 
 @end
