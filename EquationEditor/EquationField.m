@@ -67,7 +67,11 @@ double minFontSize;
     
     // finish recalculation
     [self.eq grantSizeRequest: NSMakeRect(1, (self.frame.size.height - self.eq.frame.size.height * ratio)/2, (self.eq.frame.size.width * (1-bufferWidth)) * ratio, self.eq.frame.size.height * ratio)];
-    [self.eq completeMinorComponentShifts];
+    
+    
+    
+    
+    // [self.eq completeMinorComponentShifts];
     [self adjustCursorLocation];
     [self.eq addDescendantsToSubview];
     [self.eq addHundredToWidth];

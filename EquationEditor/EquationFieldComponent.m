@@ -120,6 +120,7 @@ double heightRatio = -1;
         self.heightRatio = 0.5;
         if([self.eqTextField.stringValue isEqual: @""]) {
             // empty leaf
+            
             if(self.parent.eqFormat == DIVISION || self.parent.eqFormat == SUPERSCRIPT || self.parent.eqFormat == SQUAREROOT) {
                 size.width = fontSize;
             }
@@ -127,6 +128,12 @@ double heightRatio = -1;
                 size.width = 0;
             }
         }
+        
+        NSString *quail = self.eqTextField.stringValue;
+        
+        
+        
+        
         self.frame = NSMakeRect(self.frame.origin.x, self.frame.origin.y, size.width, fontSize);
     }
     else if(self.eqFormat == DIVISION) {
@@ -197,7 +204,6 @@ double heightRatio = -1;
     }
     else if(self.eqFormat == NORMAL) {
         double newX = 0;
-        
         double centerY = self.heightRatio * self.frame.size.height;
         for(int i=0; i<self.eqChildren.count; i++) {
             if([self.eqChildren[i] eqFormat] == SUPERSCRIPT) {
@@ -392,7 +398,7 @@ double heightRatio = -1;
                 width = self.frame.size.height;
             }
             else {
-                width = self.frame.size.height/4;
+                width = 0;
             }
         }
         else {
