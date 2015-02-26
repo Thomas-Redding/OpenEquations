@@ -54,28 +54,17 @@ double minFontSize;
         options.minFontSizeAsRatioOfMaxFontSize = 1;
     }
     
-    /*
     // make final size requests
     [self.eq makeSizeRequest:options.maxFontSize];
     ratio = fmin(self.frame.size.width/self.eq.frame.size.width, self.frame.size.height/self.eq.frame.size.height);
     if(ratio > 1) {
         ratio = 1;
     }
-    */
     
     // finish recalculation
     [self.eq grantSizeRequest: NSMakeRect(1, (self.frame.size.height - self.eq.frame.size.height * ratio)/2, self.eq.frame.size.width * ratio, self.eq.frame.size.height * ratio)];
     [self.eq completeMinorComponentShifts];
-    
-    
-    
-    
-    
     [self adjustCursorLocation];
-    
-    
-    
-    
     [self.eq addDescendantsToSubview];
 }
 
@@ -97,7 +86,7 @@ double minFontSize;
     options.superscriptDecayRate = newRate;
     [self completeRecalculation];
 }
-- (void) setSqarerootDecayRate: (double) newRate {
+- (void) setSquarerootDecayRate: (double) newRate {
     options.squarerootDecayRate = newRate;
     [self completeRecalculation];
 }
@@ -149,6 +138,7 @@ double minFontSize;
 }
 
 - (void) keyDown:(NSEvent *)theEvent {
+    
     if(theEvent.keyCode == 36) {
         // return key
     }
@@ -179,7 +169,7 @@ double minFontSize;
     else if(theEvent.keyCode == 126) {
         // up-arrow
     }
-    else {
+    else if(theEvent.characters.length == 1) {
         // insert character
         if(self.eq.childWithEndCursor != -1) {
             // something is currently highlighted
@@ -187,6 +177,9 @@ double minFontSize;
         else {
             [self insertCharacter:theEvent.characters];
         }
+    }
+    else {
+        NSLog(@"Unknown Character");
     }
 }
 
@@ -417,6 +410,9 @@ double minFontSize;
         [[componentWithCursor.eqChildren[1] eqChildren][0] setStartCursorLocation:0];
         
         [self.eq simplifyStructure];
+    }
+    else if([str isEqual: @""]) {
+        
     }
     else {
         // normal character
