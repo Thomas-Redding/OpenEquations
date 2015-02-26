@@ -147,7 +147,7 @@ double heightRatio = -1;
         double fontSize = self.frame.size.height/self.options.fontSizeToLeafA;
         NSDictionary *attr = @{NSFontAttributeName : [self.fontManager getFont:fontSize]};
         self.eqTextField.attributedStringValue = [[NSAttributedString alloc] initWithString:str attributes:attr];
-        self.eqTextField.frame = NSMakeRect(0, 0, rect.size.width, rect.size.height + fontSize * self.options.fontSizeToLeafB);
+        self.eqTextField.frame = NSMakeRect(0, 0, rect.size.width + 100, rect.size.height + fontSize * self.options.fontSizeToLeafB);
     }
     else if(self.eqFormat == NORMAL) {
         double newX = 0;
