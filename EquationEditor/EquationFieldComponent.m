@@ -128,12 +128,6 @@ double heightRatio = -1;
                 size.width = 0;
             }
         }
-        
-        NSString *quail = self.eqTextField.stringValue;
-        
-        
-        
-        
         self.frame = NSMakeRect(self.frame.origin.x, self.frame.origin.y, size.width, fontSize);
     }
     else if(self.eqFormat == DIVISION) {
