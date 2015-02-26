@@ -140,7 +140,6 @@ double heightRatio = -1;
 - (void) grantSizeRequest: (NSRect) rect {
     self.requestGrantRatio = rect.size.width / self.frame.size.width;
     self.frame = rect;
-    
     self.frame = NSMakeRect(self.frame.origin.x, self.frame.origin.y, self.frame.size.width+100, self.frame.size.height);
     
     if(self.eqFormat == LEAF) {
@@ -357,12 +356,12 @@ double heightRatio = -1;
 }
 
 - (void) simplifyStructure {
+    /*
     for(int i=1; i<self.eqChildren.count; i++) {
         [self.eqChildren[i] simplifyStructure];
     }
-        
+    
     if(self.eqFormat == NORMAL) {
-        /*
         // combine with child NORMALs
         for(int i=0; i<self.eqChildren.count; i++) {
             if([self.eqChildren[i] eqFormat] == NORMAL) {
@@ -394,8 +393,8 @@ double heightRatio = -1;
                 i--;
             }
         }
-         */
     }
+    */
 }
 
 @end

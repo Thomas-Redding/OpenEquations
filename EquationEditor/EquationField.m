@@ -64,7 +64,16 @@ double minFontSize;
     // finish recalculation
     [self.eq grantSizeRequest: NSMakeRect(1, (self.frame.size.height - self.eq.frame.size.height * ratio)/2, self.eq.frame.size.width * ratio, self.eq.frame.size.height * ratio)];
     [self.eq completeMinorComponentShifts];
+    
+    
+    
+    
+    
     [self adjustCursorLocation];
+    
+    
+    
+    
     [self.eq addDescendantsToSubview];
 }
 
@@ -300,11 +309,11 @@ double minFontSize;
         [componentWithCursor.eqChildren[2] setEqFormat: LEAF];
         [componentWithCursor.eqChildren[2] setEqTextField:[[EquationTextField alloc] initWithFrame:NSMakeRect(0, 0, 30, 30)]];
         [componentWithCursor.eqChildren[2] eqTextField].stringValue = strB;
-        
         componentWithCursor.startCursorLocation = -1;
-        componentWithCursor.childWithStartCursor = 0;
-        [componentWithCursor.eqChildren[0] setChildWithStartCursor:1];
-        [[componentWithCursor.eqChildren[0] eqChildren][1] setStartCursorLocation:0];
+        componentWithCursor.childWithStartCursor = 1;
+        [componentWithCursor.eqChildren[1] setChildWithStartCursor:0];
+        
+        [[componentWithCursor.eqChildren[1] eqChildren][0] setStartCursorLocation:0];
         
         [self.eq simplifyStructure];
     }
@@ -361,6 +370,7 @@ double minFontSize;
         componentWithCursor.eqTextField.attributedStringValue = [[NSAttributedString alloc] initWithString:newStr attributes:attr];
         componentWithCursor.startCursorLocation++;
     }
+    
     [self completeRecalculation];
     [self.cursor show];
 }
@@ -489,11 +499,13 @@ double minFontSize;
     EquationFieldComponent *componentWithCursor = self.eq;
     double xpos = self.eq.frame.origin.x;
     double ypos = self.eq.frame.origin.y;
+    
     while(componentWithCursor.childWithStartCursor != -1) {
         componentWithCursor = componentWithCursor.eqChildren[componentWithCursor.childWithStartCursor];
         xpos += componentWithCursor.frame.origin.x;
         ypos += componentWithCursor.frame.origin.y;
     }
+    
     if(componentWithCursor.startCursorLocation == -1) {
         return;
     }
