@@ -37,11 +37,13 @@ double minFontSize;
     return self;
 }
 
-
 - (void) completeRecalculation {
     // make preliminary size requests
     [self.eq makeSizeRequest:options.maxFontSize];
-    double ratio = fmin(self.frame.size.width/self.eq.frame.size.width, self.frame.size.height/self.eq.frame.size.height);
+    
+    double bufferWidth = 0.1;
+    
+    double ratio = fmin((self.frame.size.width*(1-bufferWidth))/self.eq.frame.size.width, self.frame.size.height/self.eq.frame.size.height);
     if(ratio > 1) {
         ratio = 1;
     }
@@ -55,17 +57,20 @@ double minFontSize;
     }
     
     // make final size requests
+    /*
     [self.eq makeSizeRequest:options.maxFontSize];
     ratio = fmin(self.frame.size.width/self.eq.frame.size.width, self.frame.size.height/self.eq.frame.size.height);
     if(ratio > 1) {
         ratio = 1;
     }
+    */
     
     // finish recalculation
-    [self.eq grantSizeRequest: NSMakeRect(1, (self.frame.size.height - self.eq.frame.size.height * ratio)/2, self.eq.frame.size.width * ratio, self.eq.frame.size.height * ratio)];
+    [self.eq grantSizeRequest: NSMakeRect(1, (self.frame.size.height - self.eq.frame.size.height * ratio)/2, (self.eq.frame.size.width * (1-bufferWidth)) * ratio, self.eq.frame.size.height * ratio)];
     [self.eq completeMinorComponentShifts];
     [self adjustCursorLocation];
     [self.eq addDescendantsToSubview];
+    [self.eq addHundredToWidth];
 }
 
 - (NSString*) toLaTeX {
@@ -185,6 +190,61 @@ double minFontSize;
 
 - (void) rightMouseDown: (NSEvent*) theEvent {
     // mouse drop-down menu
+    NSMenu *theMenu = [[NSMenu alloc] initWithTitle:@"Contextual Menu"];
+    [theMenu insertItemWithTitle:@"Save Image as PNG" action:@selector(saveImageAsPNG) keyEquivalent:@"" atIndex:0];
+    [theMenu insertItemWithTitle:@"Delete Equation" action:@selector(deleteEquation) keyEquivalent:@"" atIndex:0];
+    [theMenu insertItemWithTitle:@"Copy LateX to Clipboard" action:@selector(latexToClipBoard) keyEquivalent:@"" atIndex:0];
+    [NSMenu popUpContextMenu:theMenu withEvent:theEvent forView:self];
+}
+
+- (void) saveImageAsPNG {
+    
+    [self.cursor hide];
+    
+    NSData *data = [self dataWithPDFInsideRect:[self bounds]];
+    NSImage *img = [[NSImage alloc] initWithData:data];
+    
+    CGImageSourceRef source = CGImageSourceCreateWithData((CFDataRef)[img TIFFRepresentation], NULL);
+    CGImageRef maskRef =  CGImageSourceCreateImageAtIndex(source, 0, NULL);
+    
+    NSBitmapImageRep *imgRep = [[NSBitmapImageRep alloc] initWithCGImage:maskRef];
+    NSData *exportedData = [imgRep representationUsingType:NSPNGFileType properties:nil];
+    
+    NSSavePanel *savepanel = [NSSavePanel savePanel];
+    savepanel.title = @"Save chart";
+    
+    [savepanel setAllowedFileTypes:[NSArray arrayWithObjects:@"png", nil]];
+    
+    
+    [savepanel beginSheetModalForWindow:self.window completionHandler:^(NSInteger result)
+     {
+         if(NSFileHandlingPanelOKButton == result)
+         {
+             NSURL* fileURL = [savepanel URL];
+             if ([fileURL.pathExtension isEqualToString:@""])
+                 fileURL = [fileURL URLByAppendingPathExtension:@"png"];
+             [exportedData writeToURL:fileURL atomically:YES];
+         }
+     }];
+    
+    [self.cursor show];
+}
+
+- (void) deleteEquation {
+    [self.eq deleteMyChildren];
+    [self.eq removeFromSuperview];
+    self.eq = [[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:options parent:nil];
+    self.eq.eqFormat = LEAF;
+    self.eq.eqTextField = [[EquationTextField alloc] init];
+    [self completeRecalculation];
+}
+
+- (void) latexToClipBoard {
+    NSString *str = [self toLaTeX];
+    NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
+    [pasteboard clearContents];
+    NSArray *copiedObjects = [NSArray arrayWithObject:str];
+    [pasteboard writeObjects:copiedObjects];
 }
 
 // OTHER OVERRIDDEN METHODS
@@ -411,6 +471,63 @@ double minFontSize;
         
         [self.eq simplifyStructure];
     }
+    else if([str isEqual: @"∑"]) {
+        
+        NSString *strA;
+        NSString *strB;
+        NSDictionary *attr;
+        
+        if([componentWithCursor.eqTextField.stringValue isEqual: @""]) {
+            strA = @"";
+            strB = @"";
+            attr = @{NSFontAttributeName : [self.fontManager getFont:componentWithCursor.frame.size.height-1]};
+        }
+        else {
+            strA = [componentWithCursor.eqTextField.stringValue substringToIndex:componentWithCursor.startCursorLocation];
+            strB = [componentWithCursor.eqTextField.stringValue substringFromIndex:componentWithCursor.startCursorLocation];
+            attr = [componentWithCursor.eqTextField.attributedStringValue attributesAtIndex:0 effectiveRange:nil];
+        }
+        
+        componentWithCursor.eqFormat = NORMAL;
+        
+        [componentWithCursor.eqChildren addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:options parent:componentWithCursor]];
+        [componentWithCursor.eqChildren[0] setEqFormat: LEAF];
+        [componentWithCursor.eqChildren[0] setEqTextField:[[EquationTextField alloc] initWithFrame:NSMakeRect(0, 0, 30, 30)]];
+        [componentWithCursor.eqChildren[0] eqTextField].stringValue = strA;
+        
+        [componentWithCursor.eqChildren addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:options parent:componentWithCursor]];
+        [componentWithCursor.eqChildren[1] setEqFormat:SUMMATION];
+        [[componentWithCursor.eqChildren[1] eqChildren] addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:options parent:componentWithCursor.eqChildren[1]]];
+        [[componentWithCursor.eqChildren[1] eqChildren][0] setEqFormat:LEAF];
+        [[componentWithCursor.eqChildren[1] eqChildren][0] setEqTextField:[[EquationTextField alloc] initWithFrame:NSMakeRect(0, 0, 30, 30)]];
+        [[componentWithCursor.eqChildren[1] eqChildren][0] eqTextField].attributedStringValue = [[NSAttributedString alloc] initWithString:@"" attributes:attr];
+        [[componentWithCursor.eqChildren[1] eqChildren] addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:options parent:componentWithCursor.eqChildren[1]]];
+        [[componentWithCursor.eqChildren[1] eqChildren][1] setEqFormat:LEAF];
+        [[componentWithCursor.eqChildren[1] eqChildren][1] setEqTextField:[[EquationTextField alloc] initWithFrame:NSMakeRect(0, 0, 30, 30)]];
+        [[componentWithCursor.eqChildren[1] eqChildren][1] eqTextField].attributedStringValue = [[NSAttributedString alloc] initWithString:@"" attributes:attr];
+        [[componentWithCursor.eqChildren[1] eqChildren] addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:options parent:componentWithCursor.eqChildren[1]]];
+        [[componentWithCursor.eqChildren[1] eqChildren][2] setEqFormat:LEAF];
+        [[componentWithCursor.eqChildren[1] eqChildren][2] setEqTextField:[[EquationTextField alloc] initWithFrame:NSMakeRect(0, 0, 30, 30)]];
+        [[componentWithCursor.eqChildren[1] eqChildren][2] eqTextField].attributedStringValue = [[NSAttributedString alloc] initWithString:@"" attributes:attr];
+        
+        NSString *pathToRootImage = [[NSString alloc] initWithString:[[NSBundle mainBundle] pathForImageResource:@"summation.png"]];
+        NSImageView *rootImageView = [[NSImageView alloc] initWithFrame:NSMakeRect(0, 0, 50, 50)];
+        NSImage *rootImage = [[NSImage alloc] initWithContentsOfFile:pathToRootImage];
+        [rootImageView setImage:rootImage];
+        [componentWithCursor.eqChildren[1] setEqImageView:rootImageView];
+        
+        [componentWithCursor.eqChildren addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:options parent:componentWithCursor]];
+        [componentWithCursor.eqChildren[2] setEqFormat: LEAF];
+        [componentWithCursor.eqChildren[2] setEqTextField:[[EquationTextField alloc] initWithFrame:NSMakeRect(0, 0, 30, 30)]];
+        [componentWithCursor.eqChildren[2] eqTextField].stringValue = strB;
+        
+        componentWithCursor.startCursorLocation = -1;
+        componentWithCursor.childWithStartCursor = 1;
+        [componentWithCursor.eqChildren[1] setChildWithStartCursor:0];
+        [[componentWithCursor.eqChildren[1] eqChildren][0] setStartCursorLocation:0];
+        
+        [self.eq simplifyStructure];
+    }
     else if([str isEqual: @""]) {
         
     }
@@ -573,8 +690,8 @@ double minFontSize;
 }
 
 - (BOOL) setStartCursorToEq: (double) x y: (double) y {
-    if(x >=0 && x <= self.eq.frame.size.width && y >= self.eq.frame.origin.y && y <= self.eq.frame.origin.y+self.eq.frame.size.height) {
-        [self.cursor show];
+    [self.cursor show];
+    if(x >=0 && x <= self.eq.frame.size.width-100 && y >= self.eq.frame.origin.y && y <= self.eq.frame.origin.y+self.eq.frame.size.height) {
         BOOL success = [self.eq setStartCursorToEq:x y:y];
         if(success) {
             [self.eq resetAllCursorPointers];
@@ -583,7 +700,7 @@ double minFontSize;
         }
         return success;
     }
-    else if(x >= self.eq.frame.size.width) {
+    else if(x >= self.eq.frame.size.width-100) {
         [self.eq resetAllCursorPointers];
         EquationFieldComponent *current = self.eq;
         while(current.eqChildren.count != 0) {
@@ -591,6 +708,21 @@ double minFontSize;
             current = current.eqChildren[current.eqChildren.count-1];
         }
         current.startCursorLocation = (int) current.eqTextField.stringValue.length;
+        [self adjustCursorLocation];
+        return true;
+    }
+    else if(self.eq.eqFormat == LEAF && self.eq.startCursorLocation == -1) {
+        self.eq.startCursorLocation = 0;
+        [self adjustCursorLocation];
+        return true;
+    }
+    else if(self.eq.eqFormat != LEAF && self.eq.childWithStartCursor == -1) {
+        EquationFieldComponent *current = self.eq;
+        while(current.eqChildren.count != 0) {
+            current.childWithStartCursor = 0;
+            current = current.eqChildren[0];
+        }
+        current.startCursorLocation = 0;
         [self adjustCursorLocation];
         return true;
     }

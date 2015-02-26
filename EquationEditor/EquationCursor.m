@@ -50,4 +50,15 @@ int counter = 0;
     }
 }
 
+- (void) hide {
+    counter++;
+    if(!self.isHidden) {
+        [self setHidden:true];
+        [self performSelector:@selector(changeState:) withObject:[NSNumber numberWithInt:counter] afterDelay:0.5];
+    }
+    else {
+        [self performSelector:@selector(changeState:) withObject:[NSNumber numberWithInt:counter] afterDelay:0.5];
+    }
+}
+
 @end

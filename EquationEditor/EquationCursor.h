@@ -12,5 +12,6 @@
 
 - (void) changeState: (NSNumber*) counterAtCall;
 - (void) show;
+- (void) hide;
 
 @end

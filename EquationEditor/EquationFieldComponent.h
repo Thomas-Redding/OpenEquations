@@ -62,6 +62,7 @@
 - (void) resetAllCursorPointers;
 
 - (void) simplifyStructure;
-
+- (void) deleteMyChildren;
+- (void) addHundredToWidth;
 
 @end
