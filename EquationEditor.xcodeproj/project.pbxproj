@@ -26,6 +26,7 @@
 		28C7716B1A71BBEA0019755E /* root.png in Resources */ = {isa = PBXBuildFile; fileRef = 28C7716A1A71BBEA0019755E /* root.png */; };
 		28C9CCCC1A701E63007FBCEA /* latinmodern-math.otf in Resources */ = {isa = PBXBuildFile; fileRef = 28C9CCC91A701E63007FBCEA /* latinmodern-math.otf */; };
 		28C9CCCD1A701E63007FBCEA /* FontManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 28C9CCCB1A701E63007FBCEA /* FontManager.m */; };
+		28D1EA4B1AA038290052FEFC /* log.png in Resources */ = {isa = PBXBuildFile; fileRef = 28D1EA4A1AA038290052FEFC /* log.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -70,6 +71,7 @@
 		28C9CCC91A701E63007FBCEA /* latinmodern-math.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "latinmodern-math.otf"; sourceTree = "<group>"; };
 		28C9CCCA1A701E63007FBCEA /* FontManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FontManager.h; sourceTree = "<group>"; };
 		28C9CCCB1A701E63007FBCEA /* FontManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FontManager.m; sourceTree = "<group>"; };
+		28D1EA4A1AA038290052FEFC /* log.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = log.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -165,6 +167,7 @@
 			isa = PBXGroup;
 			children = (
 				28C771661A715EE60019755E /* summation.png */,
+				28D1EA4A1AA038290052FEFC /* log.png */,
 				28C7716A1A71BBEA0019755E /* root.png */,
 				28C771681A716FC40019755E /* integration.png */,
 			);
@@ -278,6 +281,7 @@
 				28197C8C1A63617C00276EF9 /* Images.xcassets in Resources */,
 				28C771671A715EE60019755E /* summation.png in Resources */,
 				28C771691A716FC40019755E /* integration.png in Resources */,
+				28D1EA4B1AA038290052FEFC /* log.png in Resources */,
 				28197C8F1A63617C00276EF9 /* MainMenu.xib in Resources */,
 				28C9CCCC1A701E63007FBCEA /* latinmodern-math.otf in Resources */,
 				28C7716B1A71BBEA0019755E /* root.png in Resources */,
