@@ -11,8 +11,6 @@
 
 /*
  TODO
- - add ∫
- - add log_b
  - add highlighting
  - add deleting components
 */
