@@ -18,6 +18,7 @@
     self.squarerootDecayRate = 0.95;
     self.summationDecayRate = 0.6;
     self.integrationDecayRate = 0.6;
+    self.logbaseDecayRate = 0.6;
     self.minFontSizeAsRatioOfMaxFontSize = 0.2;
     self.squarerootVerticalPaddingFontSizeRatio = 0.05;
     

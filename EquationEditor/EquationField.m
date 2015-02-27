@@ -595,7 +595,7 @@ double minFontSize;
         [self.eq simplifyStructure];
     }
     else if([str isEqual: @""]) {
-        
+        // do nothing with weird characters
     }
     else {
         // normal character
@@ -606,6 +606,43 @@ double minFontSize;
         NSDictionary *attr = @{NSFontAttributeName : [self.fontManager getFont:fontSize]};
         componentWithCursor.eqTextField.attributedStringValue = [[NSAttributedString alloc] initWithString:newStr attributes:attr];
         componentWithCursor.startCursorLocation++;
+        if(componentWithCursor.startCursorLocation >= 3) {
+            if([[componentWithCursor.eqTextField.stringValue substringWithRange:NSMakeRange(componentWithCursor.startCursorLocation-3, 3)] isEqual: @"log"]) {
+                NSString *strA = [componentWithCursor.eqTextField.stringValue substringToIndex:componentWithCursor.startCursorLocation-3];
+                NSString *strB = [componentWithCursor.eqTextField.stringValue substringFromIndex:componentWithCursor.startCursorLocation];
+                componentWithCursor.eqFormat = NORMAL;
+                // todo
+                
+                [componentWithCursor.eqChildren addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:options parent:componentWithCursor]];
+                [componentWithCursor.eqChildren[0] setEqFormat: LEAF];
+                [componentWithCursor.eqChildren[0] setEqTextField:[[EquationTextField alloc] initWithFrame:NSMakeRect(0, 0, 30, 30)]];
+                [componentWithCursor.eqChildren[0] eqTextField].stringValue = strA;
+                
+                [componentWithCursor.eqChildren addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:options parent:componentWithCursor]];
+                [componentWithCursor.eqChildren[1] setEqFormat: LOGBASE];
+                NSString *pathToLogImage = [[NSString alloc] initWithString:[[NSBundle mainBundle] pathForImageResource:@"log.png"]];
+                NSImageView *logImageView = [[NSImageView alloc] initWithFrame:NSMakeRect(0, 0, 50, 50)];
+                NSImage *logImage = [[NSImage alloc] initWithContentsOfFile:pathToLogImage];
+                [logImageView setImage:logImage];
+                [componentWithCursor.eqChildren[1] setEqImageView:logImageView];
+                [[componentWithCursor.eqChildren[1] eqChildren] addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:options parent:componentWithCursor.eqChildren[1]]];
+                [[componentWithCursor.eqChildren[1] eqChildren][0] setEqFormat: LEAF];
+                [[componentWithCursor.eqChildren[1] eqChildren][0] setEqTextField:[[EquationTextField alloc] initWithFrame:NSMakeRect(0, 0, 30, 30)]];
+                [[componentWithCursor.eqChildren[1] eqChildren] addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:options parent:componentWithCursor.eqChildren[1]]];
+                [[componentWithCursor.eqChildren[1] eqChildren][1] setEqFormat: LEAF];
+                [[componentWithCursor.eqChildren[1] eqChildren][1] setEqTextField:[[EquationTextField alloc] initWithFrame:NSMakeRect(0, 0, 30, 30)]];
+                
+                [componentWithCursor.eqChildren addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:options parent:componentWithCursor]];
+                [componentWithCursor.eqChildren[2] setEqFormat: LEAF];
+                [componentWithCursor.eqChildren[2] setEqTextField:[[EquationTextField alloc] initWithFrame:NSMakeRect(0, 0, 30, 30)]];
+                [componentWithCursor.eqChildren[2] eqTextField].stringValue = strB;
+                
+                componentWithCursor.startCursorLocation = -1;
+                componentWithCursor.childWithStartCursor = 1;
+                [componentWithCursor.eqChildren[1] setChildWithStartCursor:0];
+                [[componentWithCursor.eqChildren[1] eqChildren][0] setStartCursorLocation:0];
+            }
+        }
     }
     
     [self completeRecalculation];

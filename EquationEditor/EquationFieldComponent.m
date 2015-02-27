@@ -119,6 +119,14 @@ double heightRatio = -1;
         [self.eqChildren[1] makeSizeRequest:newFontSize];   // top
         [self.eqChildren[2] makeSizeRequest:fontSize];      // term
     }
+    else if(self.eqFormat == LOGBASE) {
+        double newFontSize = fontSize * self.options.logbaseDecayRate;
+        if(newFontSize < self.options.maxFontSize * self.options.minFontSizeAsRatioOfMaxFontSize) {
+            newFontSize = self.options.maxFontSize * self.options.minFontSizeAsRatioOfMaxFontSize;
+        }
+        [self.eqChildren[0] makeSizeRequest:newFontSize];   // base
+        [self.eqChildren[1] makeSizeRequest:fontSize];      // term
+    }
     
     // do own calculations
     if(self.eqFormat == LEAF) {
@@ -184,6 +192,21 @@ double heightRatio = -1;
         double intImageWidth = (self.eqImageView.image.size.width/self.eqImageView.image.size.height) * intImageHeight;
         self.heightRatio = (bottomHeight + topHeight * [self.eqChildren[1] heightRatio]) / fmax(bottomHeight+intImageHeight+topHeight, termHeight);
         self.frame = NSMakeRect(0, 0, fmax(fmax(bottomWidth, topWidth), intImageWidth) + termWidth ,fmax(bottomHeight+intImageHeight+topHeight, termHeight));
+    }
+    else if(self.eqFormat == LOGBASE) {
+        double bottomWidth = [self.eqChildren[0] frame].size.width;
+        double bottomHeight = [self.eqChildren[0] frame].size.height;
+        double termWidth = [self.eqChildren[1] frame].size.width;
+        double termHeight = [self.eqChildren[1] frame].size.height;
+        
+        double logImageHeight = termHeight;
+        double logImageWidth = (self.eqImageView.image.size.width/self.eqImageView.image.size.height) * logImageHeight;
+        
+        double heightBelow = fmax(termHeight * [self.eqChildren[1] heightRatio], bottomHeight);
+        self.heightRatio = heightBelow/(heightBelow + termHeight * (1-[self.eqChildren[1] heightRatio]));
+        double width = logImageWidth+bottomWidth+termWidth;
+        
+        self.frame = NSMakeRect(0, 0, width, (heightBelow + termHeight * (1-[self.eqChildren[1] heightRatio])));
     }
     else if(self.eqFormat == NORMAL) {
         double width = 0;
@@ -308,6 +331,22 @@ double heightRatio = -1;
         [self.eqChildren[2] grantSizeRequest:NSMakeRect(maxWidth, (bottomHeight+intImageHeight+topHeight)/2 - termHeight * [self.eqChildren[1] heightRatio], termWidth, termHeight)];
         self.frame = NSMakeRect(0, 0, fmax(fmax(bottomWidth, topWidth), intImageWidth) + termWidth ,fmax(bottomHeight+intImageHeight+topHeight, termHeight));
     }
+    else if(self.eqFormat == LOGBASE) {
+        double bottomWidth = [self.eqChildren[0] frame].size.width * self.requestGrantRatio;
+        double bottomHeight = [self.eqChildren[0] frame].size.height * self.requestGrantRatio;
+        double termWidth = [self.eqChildren[1] frame].size.width * self.requestGrantRatio;
+        double termHeight = [self.eqChildren[1] frame].size.height * self.requestGrantRatio;
+        double logImageHeight = termHeight;
+        double logImageWidth = (self.eqImageView.image.size.width/self.eqImageView.image.size.height) * logImageHeight;
+        
+        double heightBelow = fmax(termHeight * [self.eqChildren[1] heightRatio], bottomHeight);
+        self.heightRatio = heightBelow/(heightBelow + termHeight * (1-[self.eqChildren[1] heightRatio]));
+        double width = logImageWidth+bottomWidth+termWidth;
+        
+        self.eqImageView.frame = NSMakeRect(0, heightBelow, logImageWidth, logImageHeight);
+        [self.eqChildren[0] grantSizeRequest:NSMakeRect(logImageWidth, heightBelow-bottomHeight, bottomWidth, bottomHeight)];
+        [self.eqChildren[1] grantSizeRequest:NSMakeRect(logImageWidth+bottomWidth, heightBelow-termHeight * [self.eqChildren[1] heightRatio], termWidth, termHeight)];
+    }
 }
 
 - (void) addDescendantsToSubview {
@@ -320,7 +359,7 @@ double heightRatio = -1;
     if(self.eqFormat == LEAF) {
         [self addSubview:self.eqTextField];
     }
-    else if(self.eqFormat == SQUAREROOT || self.eqFormat == SUMMATION || self.eqFormat == INTEGRATION) {
+    else if(self.eqFormat == SQUAREROOT || self.eqFormat == SUMMATION || self.eqFormat == INTEGRATION || self.eqFormat == LOGBASE) {
         [self addSubview:self.eqImageView];
     }
 }
@@ -458,6 +497,28 @@ double heightRatio = -1;
             }
         }
     }
+    else if(self.eqFormat == INTEGRATION) {
+        if(x < self.eqImageView.frame.size.width+[self.eqChildren[0] frame].size.width) {
+            BOOL success = [self.eqChildren[0] setStartCursorToEq:x y:y];
+            if(success) {
+                self.childWithStartCursor = 0;
+                return true;
+            }
+            else {
+                self.childWithStartCursor = -1;
+            }
+        }
+        else {
+            BOOL success = [self.eqChildren[1] setStartCursorToEq:x y:y];
+            if(success) {
+                self.childWithStartCursor = 1;
+                return true;
+            }
+            else {
+                self.childWithStartCursor = -1;
+            }
+        }
+    }
     else if(self.eqFormat == NORMAL){
         for(int i=0; i<self.eqChildren.count; i++) {
             if(x >= [self.eqChildren[i] frame].origin.x && x <= [self.eqChildren[i] frame].origin.x + [self.eqChildren[i] frame].size.width-100) {
@@ -500,6 +561,9 @@ double heightRatio = -1;
     }
     else if(self.eqFormat == INTEGRATION) {
         return [NSString stringWithFormat:@"\\int^{%@}_{%@}{%@}", [self.eqChildren[0] toLaTeX], [self.eqChildren[1] toLaTeX], [self.eqChildren[2] toLaTeX]];
+    }
+    else if(self.eqFormat == LOGBASE) {
+        return [NSString stringWithFormat:@"\\log_{%@}{%@}", [self.eqChildren[0] toLaTeX], [self.eqChildren[1] toLaTeX], [self.eqChildren[2] toLaTeX]];
     }
     else {
         // error
@@ -549,6 +613,9 @@ double heightRatio = -1;
     else if(self.eqFormat == INTEGRATION) {
         double leftWidth = fmax(fmax([self.eqChildren[0] frame].size.width, [self.eqChildren[1] frame].size.width), self.eqImageView.frame.size.width);
         width = leftWidth + [self.eqChildren[2] frame].size.width;
+    }
+    else if(self.eqFormat == LOGBASE) {
+        width = self.eqImageView.frame.size.width + [self.eqChildren[0] frame].size.width + [self.eqChildren[1] frame].size.width;
     }
     else if(self.eqFormat == NORMAL) {
         for(int i=0; i<self.eqChildren.count; i++) {

@@ -16,6 +16,7 @@
 @property double squarerootDecayRate;   // ratio between the font-size of the stuff in a square root to the text surrounding it
 @property double summationDecayRate;
 @property double integrationDecayRate;
+@property double logbaseDecayRate;
 @property double minFontSizeAsRatioOfMaxFontSize;   // how small the smallest font-size can be as a ratio of the largest currently displayed font size
 @property double minSizeOfSummationSymbolRelativeToTermHeight;
 @property double minSizeOfIntegrationSymbolRelativeToTermHeight;
