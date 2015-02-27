@@ -24,6 +24,7 @@
     
     self.minSizeOfSummationSymbolRelativeToTermHeight = 0.8;
     self.minSizeOfIntegrationSymbolRelativeToTermHeight = 0.8;
+    self.sizeOfLogSymbolRelativeToTermHeight = 0.8;
     
     self.fontSizeToLeafA = 1.11;
     self.fontSizeToLeafB = 0.02;

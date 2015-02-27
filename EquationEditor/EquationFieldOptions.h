@@ -20,6 +20,7 @@
 @property double minFontSizeAsRatioOfMaxFontSize;   // how small the smallest font-size can be as a ratio of the largest currently displayed font size
 @property double minSizeOfSummationSymbolRelativeToTermHeight;
 @property double minSizeOfIntegrationSymbolRelativeToTermHeight;
+@property double sizeOfLogSymbolRelativeToTermHeight;
 
 // These two variables are used to make adjustments in formating due to different font choices
 // (Height of Leaf) = A * (Font-Size)
