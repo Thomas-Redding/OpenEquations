@@ -43,7 +43,7 @@ double minFontSize;
     
     double bufferWidth = 0.1;
     
-    double ratio = fmin((self.frame.size.width*(1-bufferWidth))/self.eq.frame.size.width, self.frame.size.height/self.eq.frame.size.height);
+    double ratio = fmin((self.frame.size.width*(1-bufferWidth))/(self.eq.frame.size.width), self.frame.size.height/self.eq.frame.size.height);
     if(ratio > 1) {
         ratio = 1;
     }
@@ -57,16 +57,14 @@ double minFontSize;
     }
     
     // make final size requests
-    /*
     [self.eq makeSizeRequest:options.maxFontSize];
     ratio = fmin(self.frame.size.width/self.eq.frame.size.width, self.frame.size.height/self.eq.frame.size.height);
     if(ratio > 1) {
         ratio = 1;
     }
-    */
     
     // finish recalculation
-    [self.eq grantSizeRequest: NSMakeRect(1, (self.frame.size.height - self.eq.frame.size.height * ratio)/2, (self.eq.frame.size.width * (1-bufferWidth)) * ratio, self.eq.frame.size.height * ratio)];
+    [self.eq grantSizeRequest: NSMakeRect(1, (self.frame.size.height - self.eq.frame.size.height * ratio)/2, self.eq.frame.size.width * ratio, self.eq.frame.size.height * ratio)];
     
     [self.eq completeMinorComponentShifts];
     [self adjustCursorLocation];
