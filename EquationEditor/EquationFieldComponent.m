@@ -661,8 +661,8 @@ double heightRatio = -1;
         for(int i=0; i<self.eqChildren.count; i++) {
             if([self.eqChildren[i] eqFormat] == NORMAL) {
                 // combine with child NORMALs
-                if(self.childWithStartCursor == i) {
-                    self.childWithStartCursor += [self.eqChildren[i] childWithStartCursor] + 1;
+                if(self.childWithStartCursor != -1 && self.childWithStartCursor >= i) {
+                    self.childWithStartCursor += [self.eqChildren[i] childWithStartCursor];
                 }
                 else if(self.childWithStartCursor > i) {
                     self.childWithStartCursor += (int) [self.eqChildren[i] eqChildren].count;
