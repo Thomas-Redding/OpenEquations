@@ -28,6 +28,7 @@
 @property EquationFieldComponentType eqFormat;
 @property EquationTextField* eqTextField;
 @property NSImageView* eqImageView;
+@property NSImageView* eqImageViewB;
 @property EquationFieldComponent *parent;
 
 /*

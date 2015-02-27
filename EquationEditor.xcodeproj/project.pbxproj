@@ -16,6 +16,8 @@
 		282141CC1A95898700129536 /* STIXMathJax_Main-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 282141CB1A95898700129536 /* STIXMathJax_Main-Italic.otf */; };
 		2847AE3C1A69F69F00FF73D6 /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2847AE3B1A69F69F00FF73D6 /* GLUT.framework */; };
 		28520E141A97F99600CC891A /* EquationTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 28520E131A97F99600CC891A /* EquationTextField.m */; };
+		285ACD931AA10F7C006E6D75 /* leftParentheses.png in Resources */ = {isa = PBXBuildFile; fileRef = 285ACD911AA10F7C006E6D75 /* leftParentheses.png */; };
+		285ACD941AA10F7C006E6D75 /* rightParentheses.png in Resources */ = {isa = PBXBuildFile; fileRef = 285ACD921AA10F7C006E6D75 /* rightParentheses.png */; };
 		2867FF691A991A16009F56B4 /* EquationCursor.m in Sources */ = {isa = PBXBuildFile; fileRef = 2867FF681A991A16009F56B4 /* EquationCursor.m */; };
 		287BBF121A69AACF00F11710 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 287BBF111A69AACF00F11710 /* OpenGL.framework */; };
 		287BBF141A69AADE00F11710 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 287BBF131A69AADE00F11710 /* Cocoa.framework */; };
@@ -57,6 +59,8 @@
 		2847AE3B1A69F69F00FF73D6 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
 		28520E121A97F99600CC891A /* EquationTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EquationTextField.h; sourceTree = "<group>"; };
 		28520E131A97F99600CC891A /* EquationTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EquationTextField.m; sourceTree = "<group>"; };
+		285ACD911AA10F7C006E6D75 /* leftParentheses.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = leftParentheses.png; sourceTree = "<group>"; };
+		285ACD921AA10F7C006E6D75 /* rightParentheses.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rightParentheses.png; sourceTree = "<group>"; };
 		2867FF671A991A16009F56B4 /* EquationCursor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EquationCursor.h; sourceTree = "<group>"; };
 		2867FF681A991A16009F56B4 /* EquationCursor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EquationCursor.m; sourceTree = "<group>"; };
 		287BBF111A69AACF00F11710 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
@@ -167,6 +171,8 @@
 			isa = PBXGroup;
 			children = (
 				28C771661A715EE60019755E /* summation.png */,
+				285ACD911AA10F7C006E6D75 /* leftParentheses.png */,
+				285ACD921AA10F7C006E6D75 /* rightParentheses.png */,
 				28D1EA4A1AA038290052FEFC /* log.png */,
 				28C7716A1A71BBEA0019755E /* root.png */,
 				28C771681A716FC40019755E /* integration.png */,
@@ -278,12 +284,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				282141CC1A95898700129536 /* STIXMathJax_Main-Italic.otf in Resources */,
+				285ACD941AA10F7C006E6D75 /* rightParentheses.png in Resources */,
 				28197C8C1A63617C00276EF9 /* Images.xcassets in Resources */,
 				28C771671A715EE60019755E /* summation.png in Resources */,
 				28C771691A716FC40019755E /* integration.png in Resources */,
 				28D1EA4B1AA038290052FEFC /* log.png in Resources */,
 				28197C8F1A63617C00276EF9 /* MainMenu.xib in Resources */,
 				28C9CCCC1A701E63007FBCEA /* latinmodern-math.otf in Resources */,
+				285ACD931AA10F7C006E6D75 /* leftParentheses.png in Resources */,
 				28C7716B1A71BBEA0019755E /* root.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

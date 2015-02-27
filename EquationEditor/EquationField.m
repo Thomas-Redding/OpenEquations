@@ -398,6 +398,20 @@ double minFontSize;
         [imageView setImage:image];
         [rtn setEqImageView:imageView];
     }
+    else if([array[0] isEqual: @"PARENTHESES"]) {
+        // parentheses
+        rtn.eqFormat = PARENTHESES;
+        NSString *pathToImage = [[NSString alloc] initWithString:[[NSBundle mainBundle] pathForImageResource:@"leftParentheses.png"]];
+        NSImageView *imageView = [[NSImageView alloc] initWithFrame:NSMakeRect(0, 0, 50, 50)];
+        NSImage *image = [[NSImage alloc] initWithContentsOfFile:pathToImage];
+        [imageView setImage:image];
+        [rtn setEqImageView:imageView];
+        pathToImage = [[NSString alloc] initWithString:[[NSBundle mainBundle] pathForImageResource:@"rightParentheses.png"]];
+        imageView = [[NSImageView alloc] initWithFrame:NSMakeRect(0, 0, 50, 50)];
+        image = [[NSImage alloc] initWithContentsOfFile:pathToImage];
+        [imageView setImage:image];
+        [rtn setEqImageViewB:imageView];
+    }
     else if([array[0] isEqual: @"NORMAL"]) {
         rtn.eqFormat = NORMAL;
     }
@@ -760,6 +774,72 @@ double minFontSize;
     return true;
 }
 
+- (BOOL) insertParentheses {
+    EquationFieldComponent *componentWithCursor = self.eq;
+    while(componentWithCursor.childWithStartCursor != -1) {
+        componentWithCursor = componentWithCursor.eqChildren[componentWithCursor.childWithStartCursor];
+    }
+    if(componentWithCursor.startCursorLocation == -1) {
+        // error
+        return false;
+    }
+    
+    NSString *strA;
+    NSString *strB;
+    NSDictionary *attr;
+    
+    if([componentWithCursor.eqTextField.stringValue isEqual: @""]) {
+        strA = @"";
+        strB = @"";
+        attr = @{NSFontAttributeName : [self.fontManager getFont:componentWithCursor.frame.size.height-1]};
+    }
+    else {
+        strA = [componentWithCursor.eqTextField.stringValue substringToIndex:componentWithCursor.startCursorLocation];
+        strB = [componentWithCursor.eqTextField.stringValue substringFromIndex:componentWithCursor.startCursorLocation];
+        attr = [componentWithCursor.eqTextField.attributedStringValue attributesAtIndex:0 effectiveRange:nil];
+    }
+    
+    componentWithCursor.eqFormat = NORMAL;
+    
+    [componentWithCursor.eqChildren addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:options parent:componentWithCursor]];
+    [componentWithCursor.eqChildren[0] setEqFormat: LEAF];
+    [componentWithCursor.eqChildren[0] setEqTextField:[[EquationTextField alloc] initWithFrame:NSMakeRect(0, 0, 30, 30)]];
+    [componentWithCursor.eqChildren[0] eqTextField].stringValue = strA;
+    
+    [componentWithCursor.eqChildren addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:options parent:componentWithCursor]];
+    [componentWithCursor.eqChildren[1] setEqFormat:PARENTHESES];
+    [[componentWithCursor.eqChildren[1] eqChildren] addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:options parent:componentWithCursor.eqChildren[1]]];
+    [[componentWithCursor.eqChildren[1] eqChildren][0] setEqFormat:LEAF];
+    [[componentWithCursor.eqChildren[1] eqChildren][0] setEqTextField:[[EquationTextField alloc] initWithFrame:NSMakeRect(0, 0, 30, 30)]];
+    [[componentWithCursor.eqChildren[1] eqChildren][0] eqTextField].attributedStringValue = [[NSAttributedString alloc] initWithString:@"" attributes:attr];
+    
+    NSString *pathToImage = [[NSString alloc] initWithString:[[NSBundle mainBundle] pathForImageResource:@"leftParentheses.png"]];
+    NSImageView *imageView = [[NSImageView alloc] initWithFrame:NSMakeRect(0, 0, 50, 50)];
+    NSImage *image = [[NSImage alloc] initWithContentsOfFile:pathToImage];
+    [imageView setImage:image];
+    [componentWithCursor.eqChildren[1] setEqImageView:imageView];
+    
+    pathToImage = [[NSString alloc] initWithString:[[NSBundle mainBundle] pathForImageResource:@"rightParentheses.png"]];
+    imageView = [[NSImageView alloc] initWithFrame:NSMakeRect(0, 0, 50, 50)];
+    image = [[NSImage alloc] initWithContentsOfFile:pathToImage];
+    [imageView setImage:image];
+    [componentWithCursor.eqChildren[1] setEqImageViewB:imageView];
+    
+    [componentWithCursor.eqChildren addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:options parent:componentWithCursor]];
+    [componentWithCursor.eqChildren[2] setEqFormat: LEAF];
+    [componentWithCursor.eqChildren[2] setEqTextField:[[EquationTextField alloc] initWithFrame:NSMakeRect(0, 0, 30, 30)]];
+    [componentWithCursor.eqChildren[2] eqTextField].stringValue = strB;
+    
+    componentWithCursor.startCursorLocation = -1;
+    componentWithCursor.childWithStartCursor = 1;
+    [componentWithCursor.eqChildren[1] setChildWithStartCursor:0];
+    [[componentWithCursor.eqChildren[1] eqChildren][0] setStartCursorLocation:0];
+    
+    [self.eq simplifyStructure];
+    
+    return true;
+}
+
 - (BOOL) insertCharacter: (NSString*) str {
     BOOL success;
     if([str isEqual: @"/"]) {
@@ -776,6 +856,13 @@ double minFontSize;
     }
     else if([str isEqual: @"∫"]) {
         success = [self insertIntegration];
+    }
+    else if([str isEqual: @"("]) {
+        success = [self insertParentheses];
+    }
+    else if([str isEqual: @")"]) {
+        // do nothing
+        success = false;
     }
     else if([str isEqual: @""]) {
         // do nothing with weird characters

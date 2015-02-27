@@ -127,6 +127,9 @@ double heightRatio = -1;
         [self.eqChildren[0] makeSizeRequest:newFontSize];   // base
         [self.eqChildren[1] makeSizeRequest:fontSize];      // term
     }
+    else if(self.eqFormat == PARENTHESES) {
+        [self.eqChildren[0] makeSizeRequest:fontSize];
+    }
     
     // do own calculations
     if(self.eqFormat == LEAF) {
@@ -214,6 +217,14 @@ double heightRatio = -1;
         double width = imageWidth+bottomWidth+termWidth;
         
         self.frame = NSMakeRect(0, 0, width, heightBelow + heightAbove);
+    }
+    else if(self.eqFormat == PARENTHESES) {
+        double childWidth = [self.eqChildren[0] frame].size.width;
+        double childHeight = [self.eqChildren[0] frame].size.height;
+        double imageHeight = childHeight;
+        double imageWidth = (self.eqImageView.image.size.width/self.eqImageView.image.size.height) * imageHeight;
+        self.heightRatio = [self.eqChildren[0] heightRatio];
+        self.frame = NSMakeRect(0, 0, imageWidth+childWidth+imageWidth, childHeight);
     }
     else if(self.eqFormat == NORMAL) {
         double width = 0;
@@ -356,6 +367,16 @@ double heightRatio = -1;
         [self.eqChildren[0] grantSizeRequest:NSMakeRect(imageWidth, heightBelow-bottomHeight, bottomWidth, bottomHeight)];
         [self.eqChildren[1] grantSizeRequest:NSMakeRect(imageWidth+bottomWidth, heightBelow-termHeight*[self.eqChildren[1] heightRatio], termWidth, termHeight)];
     }
+    else if(self.eqFormat == PARENTHESES) {
+        double childWidth = [self.eqChildren[0] frame].size.width * self.requestGrantRatio;
+        double childHeight = [self.eqChildren[0] frame].size.height * self.requestGrantRatio;
+        double imageHeight = childHeight;
+        double imageWidth = (self.eqImageView.image.size.width/self.eqImageView.image.size.height) * imageHeight;
+        
+        self.eqImageView.frame = NSMakeRect(0, 0, imageWidth, imageHeight);
+        self.eqImageViewB.frame = NSMakeRect(imageWidth+childWidth, 0, imageWidth, imageHeight);
+        [self.eqChildren[0] grantSizeRequest:NSMakeRect(imageWidth, 0, childWidth, childHeight)];
+    }
 }
 
 - (void) addDescendantsToSubview {
@@ -370,6 +391,10 @@ double heightRatio = -1;
     }
     else if(self.eqFormat == SQUAREROOT || self.eqFormat == SUMMATION || self.eqFormat == INTEGRATION || self.eqFormat == LOGBASE) {
         [self addSubview:self.eqImageView];
+    }
+    else if(self.eqFormat == PARENTHESES) {
+        [self addSubview:self.eqImageView];
+        [self addSubview:self.eqImageViewB];
     }
 }
 
@@ -574,6 +599,9 @@ double heightRatio = -1;
     else if(self.eqFormat == LOGBASE) {
         return [NSString stringWithFormat:@"\\log_{%@}{%@}", [self.eqChildren[0] toLaTeX], [self.eqChildren[1] toLaTeX]];
     }
+    else if(self.eqFormat == PARENTHESES) {
+        return [NSString stringWithFormat:@"\left(%@\right)", [self.eqChildren[0] toLaTeX]];
+    }
     else {
         // error
         return @"";
@@ -632,6 +660,9 @@ double heightRatio = -1;
             [self.eqChildren[i] setFrame:NSMakeRect(width, frame.origin.y, frame.size.width, frame.size.height)];
             width += [self.eqChildren[i] frame].size.width;
         }
+    }
+    else if(self.eqFormat == PARENTHESES) {
+        width = self.eqImageView.frame.size.width + [self.eqChildren[0] frame].size.width + self.eqImageViewB.frame.size.width;
     }
     
     self.frame = NSMakeRect(self.frame.origin.x, self.frame.origin.y, width, self.frame.size.height);
@@ -727,6 +758,9 @@ double heightRatio = -1;
     }
     else if(self.eqFormat == LOGBASE) {
         [rtn addObject:@"LOGBASE"];
+    }
+    else if(self.eqFormat == PARENTHESES) {
+        [rtn addObject:@"PARENTHESES"];
     }
     else if(self.eqFormat == NORMAL) {
         [rtn addObject:@"NORMAL"];
