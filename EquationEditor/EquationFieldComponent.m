@@ -159,7 +159,7 @@ double heightRatio = -1;
         double termHeight = [self.eqChildren[2] frame].size.height;
         
         
-        double sumImageHeight = fmax(termHeight - (bottomHeight+topHeight), termHeight/2);
+        double sumImageHeight = fmax(termHeight - (bottomHeight+topHeight), termHeight*self.options.minSizeOfSummationSymbolRelativeToTermHeight);
         double sumImageWidth = (self.eqImageView.image.size.width/self.eqImageView.image.size.height) * sumImageHeight;
         self.heightRatio = 0.5;
         self.frame = NSMakeRect(0, 0, fmax(fmax(bottomWidth, topWidth), sumImageWidth) + termWidth ,fmax(bottomHeight+sumImageHeight+topHeight, termHeight));

@@ -117,6 +117,14 @@ double minFontSize;
     return minFontSize;
 }
 
+- (void) setMinSizeOfSummationSymbolRelativeToTermHeight: (double) newRatio {
+    options.minSizeOfSummationSymbolRelativeToTermHeight = newRatio;
+    [self completeRecalculation];
+}
+- (double) minSizeOfSummationSymbolRelativeToTermHeight {
+    return options.minSizeOfSummationSymbolRelativeToTermHeight;
+}
+
 
 // USER INTERACTION
 

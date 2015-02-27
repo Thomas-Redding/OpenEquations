@@ -20,6 +20,8 @@
     self.minFontSizeAsRatioOfMaxFontSize = 0.2;
     self.squarerootVerticalPaddingFontSizeRatio = 0.05;
     
+    self.minSizeOfSummationSymbolRelativeToTermHeight = 0.8;
+    
     self.fontSizeToLeafA = 1.11;
     self.fontSizeToLeafB = 0.02;
     self.horizontalPaddingFontSizeRatio = 0.05;

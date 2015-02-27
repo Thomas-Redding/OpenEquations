@@ -37,6 +37,10 @@
 - (void) setSuperscriptDecayRate: (double) newRate;
 - (void) setSquarerootDecayRate: (double) newRate;
 
+
+- (void) setMinSizeOfSummationSymbolRelativeToTermHeight: (double) newRatio;
+- (double) minSizeOfSummationSymbolRelativeToTermHeight;
+
 - (double) minFontSize;                     // how small the smallest font-size can be
 - (void) setMinFontSize:(double) newSize;
 
