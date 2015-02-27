@@ -203,13 +203,15 @@ double heightRatio = -1;
             if([self.eqChildren[i] eqFormat] == SUPERSCRIPT) {
                 NSSize oldSize = [self.eqChildren[i] frame].size;
                 double heightOfLastChild = 0;
+                double positionOfLastChild = 0;
                 if(i == 0) {
                     NSLog(@"ERROR - SUPERSCRIPT IS RIGHT-MOST CHILD");
                 }
                 else {
                     heightOfLastChild = [self.eqChildren[i-1] frame].size.height;
+                    positionOfLastChild = [self.eqChildren[i-1] frame].origin.y;
                 }
-                [self.eqChildren[i] grantSizeRequest:NSMakeRect(newX, heightOfLastChild/2, oldSize.width * self.requestGrantRatio, oldSize.height * self.requestGrantRatio)];
+                [self.eqChildren[i] grantSizeRequest:NSMakeRect(newX, positionOfLastChild+heightOfLastChild/2, oldSize.width * self.requestGrantRatio, oldSize.height * self.requestGrantRatio)];
                 newX += [self.eqChildren[i] frame].size.width;
             }
             else {
@@ -241,9 +243,9 @@ double heightRatio = -1;
         }
     }
     else if(self.eqFormat == SUPERSCRIPT) {
-        double centerY = self.heightRatio * self.frame.size.height;
-        NSSize oldSize = [self.eqChildren[0] frame].size;
-        [self.eqChildren[0] grantSizeRequest:NSMakeRect(0, centerY, oldSize.width * self.requestGrantRatio, oldSize.height * self.requestGrantRatio)];
+        // double centerY = self.heightRatio * self.frame.size.height;
+        // NSSize oldSize = [self.eqChildren[0] frame].size;
+        [self.eqChildren[0] grantSizeRequest:NSMakeRect(0, 0, self.frame.size.width, self.frame.size.height)];
     }
     else if(self.eqFormat == SQUAREROOT) {
         double rootImageHeight = self.frame.size.height;
