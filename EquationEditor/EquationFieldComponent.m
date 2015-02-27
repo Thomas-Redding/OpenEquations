@@ -495,7 +495,6 @@ double heightRatio = -1;
 }
 
 - (void) simplifyStructure {
-    /*
     for(int i=1; i<self.eqChildren.count; i++) {
         [self.eqChildren[i] simplifyStructure];
     }
@@ -533,7 +532,6 @@ double heightRatio = -1;
             }
         }
     }
-    */
 }
 
 - (void) addHundredToWidth {

@@ -10,7 +10,11 @@
 #import "EquationField.h"
 
 /*
- font: Computer Modern Roman
+ TODO
+ - add ∫
+ - add log_b
+ - add highlighting
+ - add deleting components
 */
 
 @interface AppDelegate : NSObject <NSApplicationDelegate>
