@@ -11,6 +11,7 @@
 @implementation EquationField
 
 EquationFieldOptions* options;
+NSMutableArray *undoList;
 int cursorCounter = 0;
 double minFontSize;
 
@@ -19,6 +20,8 @@ double minFontSize;
     self.fontManager = f;
     options = [[EquationFieldOptions alloc] init];
     minFontSize = 18;
+    
+    undoList = [[NSMutableArray alloc] init];
     
     [self setWantsLayer:YES];
     double shade = 1; // system background: 0.905882353;
@@ -253,6 +256,11 @@ double minFontSize;
     NSArray *copiedObjects = [NSArray arrayWithObject:str];
     [pasteboard writeObjects:copiedObjects];
 }
+
+- (NSArray*) toArray {
+    return [self.eq toArray];
+}
+
 
 // OTHER OVERRIDDEN METHODS
 

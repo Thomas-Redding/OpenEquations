@@ -18,7 +18,6 @@ typedef enum {
     SQUAREROOT,
     SUMMATION,
     INTEGRATION,
-    
     LOGBASE
 } EquationFieldComponentType;
 

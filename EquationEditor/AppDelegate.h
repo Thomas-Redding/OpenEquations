@@ -11,6 +11,9 @@
 
 /*
  TODO
+ - add ()
+ - import latex
+ - add undo
  - add highlighting
  - add deleting components
 */

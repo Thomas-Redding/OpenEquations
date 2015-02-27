@@ -37,7 +37,6 @@
 - (void) setSuperscriptDecayRate: (double) newRate;
 - (void) setSquarerootDecayRate: (double) newRate;
 
-
 - (void) setMinSizeOfSummationSymbolRelativeToTermHeight: (double) newRatio;
 - (double) minSizeOfSummationSymbolRelativeToTermHeight;
 

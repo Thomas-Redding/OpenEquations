@@ -64,5 +64,6 @@
 - (void) simplifyStructure;
 - (void) deleteMyChildren;
 - (void) addHundredToWidth;
+- (NSArray*) toArray;
 
 @end

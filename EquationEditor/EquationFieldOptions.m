@@ -22,8 +22,8 @@
     self.minFontSizeAsRatioOfMaxFontSize = 0.2;
     self.squarerootVerticalPaddingFontSizeRatio = 0.05;
     
-    self.minSizeOfSummationSymbolRelativeToTermHeight = 0.8;
-    self.minSizeOfIntegrationSymbolRelativeToTermHeight = 0.8;
+    self.minSizeOfSummationSymbolRelativeToTermHeight = 0.5;
+    self.minSizeOfIntegrationSymbolRelativeToTermHeight = 0.5;
     self.sizeOfLogSymbolRelativeToTermHeight = 0.8;
     
     self.fontSizeToLeafA = 1.11;

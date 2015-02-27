@@ -314,12 +314,12 @@ double heightRatio = -1;
         
         double maxWidth = fmax(fmax(bottomWidth, topWidth), imageWidth);
         
-        double centerY = self.frame.size.height * self.heightRatio;
+        double centerY = fmax(bottomHeight + imageHeight/2, termHeight * [self.eqChildren[1] heightRatio]);
         
         self.eqImageView.frame = NSMakeRect(maxWidth/2-imageWidth/2, centerY-imageHeight/2, imageWidth, imageHeight);
         [self.eqChildren[0] grantSizeRequest:NSMakeRect(maxWidth/2-bottomWidth/2, centerY-bottomHeight-imageHeight/2, bottomWidth, bottomHeight)];
         [self.eqChildren[1] grantSizeRequest:NSMakeRect(maxWidth/2-topWidth/2, centerY+imageHeight/2, topWidth, topHeight)];
-        [self.eqChildren[2] grantSizeRequest:NSMakeRect(maxWidth, centerY - termHeight * [self.eqChildren[2] heightRatio], termWidth, termHeight)];
+        [self.eqChildren[2] grantSizeRequest:NSMakeRect(maxWidth, (bottomHeight+imageHeight+topHeight)/2 - termHeight * [self.eqChildren[1] heightRatio], termWidth, termHeight)];
         self.frame = NSMakeRect(0, 0, fmax(fmax(bottomWidth, topWidth), imageWidth) + termWidth ,fmax(bottomHeight+imageHeight+topHeight, termHeight));
     }
     else if(self.eqFormat == INTEGRATION) {
@@ -338,7 +338,7 @@ double heightRatio = -1;
         
         self.eqImageView.frame = NSMakeRect(maxWidth/2-imageWidth/2, centerY-imageHeight/2, imageWidth, imageHeight);
         [self.eqChildren[0] grantSizeRequest:NSMakeRect(maxWidth/2-bottomWidth/2, centerY-bottomHeight-imageHeight/2, bottomWidth, bottomHeight)];
-        [self.eqChildren[1] grantSizeRequest:NSMakeRect(maxWidth/2-topWidth/2, centerY+termHeight*(1-[self.eqChildren[1] heightRatio]), topWidth, topHeight)];
+        [self.eqChildren[1] grantSizeRequest:NSMakeRect(maxWidth/2-topWidth/2, centerY+imageHeight/2, topWidth, topHeight)];
         [self.eqChildren[2] grantSizeRequest:NSMakeRect(maxWidth, (bottomHeight+imageHeight+topHeight)/2 - termHeight * [self.eqChildren[1] heightRatio], termWidth, termHeight)];
         self.frame = NSMakeRect(0, 0, fmax(fmax(bottomWidth, topWidth), imageWidth) + termWidth ,fmax(bottomHeight+imageHeight+topHeight, termHeight));
     }
@@ -700,6 +700,43 @@ double heightRatio = -1;
 
 - (void) deleteMyChildren {
     //
+}
+
+- (NSArray*) toArray {
+    if(self.eqFormat == LEAF) {
+        return [[NSArray alloc] initWithObjects:self.eqTextField.stringValue, nil];
+    }
+    
+    NSMutableArray *rtn = [[NSMutableArray alloc] init];
+    
+    // DIV, SUP, SQU, SUM, INT, LOG
+    if(self.eqFormat == DIVISION) {
+        [rtn addObject:@"DIVISION"];
+    }
+    else if(self.eqFormat == SUPERSCRIPT) {
+        [rtn addObject:@"SUPERSCRIPT"];
+    }
+    else if(self.eqFormat == SQUAREROOT) {
+        [rtn addObject:@"SQUAREROOT"];
+    }
+    else if(self.eqFormat == SUMMATION) {
+        [rtn addObject:@"SUMMATION"];
+    }
+    else if(self.eqFormat == INTEGRATION) {
+        [rtn addObject:@"INTEGRATION"];
+    }
+    else if(self.eqFormat == LOGBASE) {
+        [rtn addObject:@"LOGBASE"];
+    }
+    else if(self.eqFormat == NORMAL) {
+        [rtn addObject:@"NORMAL"];
+    }
+    
+    for(int i=0; i<self.eqChildren.count; i++) {
+        [rtn addObject:[self.eqChildren[i] toArray]];
+    }
+    
+    return rtn;
 }
 
 @end
