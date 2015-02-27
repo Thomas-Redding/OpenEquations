@@ -16,6 +16,7 @@
     self.superscriptDecayRate = 0.6;
     self.divisionDecayRate = 0.8;
     self.squarerootDecayRate = 0.95;
+    self.summationDecayRate = 0.6;
     self.minFontSizeAsRatioOfMaxFontSize = 0.2;
     self.squarerootVerticalPaddingFontSizeRatio = 0.05;
     
