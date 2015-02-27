@@ -537,6 +537,63 @@ double minFontSize;
         
         [self.eq simplifyStructure];
     }
+    else if([str isEqual: @"∫"]) {
+        
+        NSString *strA;
+        NSString *strB;
+        NSDictionary *attr;
+        
+        if([componentWithCursor.eqTextField.stringValue isEqual: @""]) {
+            strA = @"";
+            strB = @"";
+            attr = @{NSFontAttributeName : [self.fontManager getFont:componentWithCursor.frame.size.height-1]};
+        }
+        else {
+            strA = [componentWithCursor.eqTextField.stringValue substringToIndex:componentWithCursor.startCursorLocation];
+            strB = [componentWithCursor.eqTextField.stringValue substringFromIndex:componentWithCursor.startCursorLocation];
+            attr = [componentWithCursor.eqTextField.attributedStringValue attributesAtIndex:0 effectiveRange:nil];
+        }
+        
+        componentWithCursor.eqFormat = NORMAL;
+        
+        [componentWithCursor.eqChildren addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:options parent:componentWithCursor]];
+        [componentWithCursor.eqChildren[0] setEqFormat: LEAF];
+        [componentWithCursor.eqChildren[0] setEqTextField:[[EquationTextField alloc] initWithFrame:NSMakeRect(0, 0, 30, 30)]];
+        [componentWithCursor.eqChildren[0] eqTextField].stringValue = strA;
+        
+        [componentWithCursor.eqChildren addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:options parent:componentWithCursor]];
+        [componentWithCursor.eqChildren[1] setEqFormat:INTEGRATION];
+        [[componentWithCursor.eqChildren[1] eqChildren] addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:options parent:componentWithCursor.eqChildren[1]]];
+        [[componentWithCursor.eqChildren[1] eqChildren][0] setEqFormat:LEAF];
+        [[componentWithCursor.eqChildren[1] eqChildren][0] setEqTextField:[[EquationTextField alloc] initWithFrame:NSMakeRect(0, 0, 30, 30)]];
+        [[componentWithCursor.eqChildren[1] eqChildren][0] eqTextField].attributedStringValue = [[NSAttributedString alloc] initWithString:@"" attributes:attr];
+        [[componentWithCursor.eqChildren[1] eqChildren] addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:options parent:componentWithCursor.eqChildren[1]]];
+        [[componentWithCursor.eqChildren[1] eqChildren][1] setEqFormat:LEAF];
+        [[componentWithCursor.eqChildren[1] eqChildren][1] setEqTextField:[[EquationTextField alloc] initWithFrame:NSMakeRect(0, 0, 30, 30)]];
+        [[componentWithCursor.eqChildren[1] eqChildren][1] eqTextField].attributedStringValue = [[NSAttributedString alloc] initWithString:@"" attributes:attr];
+        [[componentWithCursor.eqChildren[1] eqChildren] addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:options parent:componentWithCursor.eqChildren[1]]];
+        [[componentWithCursor.eqChildren[1] eqChildren][2] setEqFormat:LEAF];
+        [[componentWithCursor.eqChildren[1] eqChildren][2] setEqTextField:[[EquationTextField alloc] initWithFrame:NSMakeRect(0, 0, 30, 30)]];
+        [[componentWithCursor.eqChildren[1] eqChildren][2] eqTextField].attributedStringValue = [[NSAttributedString alloc] initWithString:@"" attributes:attr];
+        
+        NSString *pathToRootImage = [[NSString alloc] initWithString:[[NSBundle mainBundle] pathForImageResource:@"integration.png"]];
+        NSImageView *intImageView = [[NSImageView alloc] initWithFrame:NSMakeRect(0, 0, 50, 50)];
+        NSImage *intImage = [[NSImage alloc] initWithContentsOfFile:pathToRootImage];
+        [intImageView setImage:intImage];
+        [componentWithCursor.eqChildren[1] setEqImageView:intImageView];
+        
+        [componentWithCursor.eqChildren addObject:[[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:options parent:componentWithCursor]];
+        [componentWithCursor.eqChildren[2] setEqFormat: LEAF];
+        [componentWithCursor.eqChildren[2] setEqTextField:[[EquationTextField alloc] initWithFrame:NSMakeRect(0, 0, 30, 30)]];
+        [componentWithCursor.eqChildren[2] eqTextField].stringValue = strB;
+        
+        componentWithCursor.startCursorLocation = -1;
+        componentWithCursor.childWithStartCursor = 1;
+        [componentWithCursor.eqChildren[1] setChildWithStartCursor:0];
+        [[componentWithCursor.eqChildren[1] eqChildren][0] setStartCursorLocation:0];
+        
+        [self.eq simplifyStructure];
+    }
     else if([str isEqual: @""]) {
         
     }

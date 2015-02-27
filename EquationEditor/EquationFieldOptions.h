@@ -15,9 +15,10 @@
 @property double superscriptDecayRate;  // ratio between the font-size of a superscript to the text to its left
 @property double squarerootDecayRate;   // ratio between the font-size of the stuff in a square root to the text surrounding it
 @property double summationDecayRate;
+@property double integrationDecayRate;
 @property double minFontSizeAsRatioOfMaxFontSize;   // how small the smallest font-size can be as a ratio of the largest currently displayed font size
 @property double minSizeOfSummationSymbolRelativeToTermHeight;
-
+@property double minSizeOfIntegrationSymbolRelativeToTermHeight;
 
 // These two variables are used to make adjustments in formating due to different font choices
 // (Height of Leaf) = A * (Font-Size)

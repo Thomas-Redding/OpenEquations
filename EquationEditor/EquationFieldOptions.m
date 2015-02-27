@@ -17,10 +17,12 @@
     self.divisionDecayRate = 0.8;
     self.squarerootDecayRate = 0.95;
     self.summationDecayRate = 0.6;
+    self.integrationDecayRate = 0.6;
     self.minFontSizeAsRatioOfMaxFontSize = 0.2;
     self.squarerootVerticalPaddingFontSizeRatio = 0.05;
     
     self.minSizeOfSummationSymbolRelativeToTermHeight = 0.8;
+    self.minSizeOfIntegrationSymbolRelativeToTermHeight = 0.8;
     
     self.fontSizeToLeafA = 1.11;
     self.fontSizeToLeafB = 0.02;
