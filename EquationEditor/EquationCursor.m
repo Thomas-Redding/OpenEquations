@@ -15,12 +15,14 @@ int counter = 0;
 - (EquationCursor*)init {
     self = [super init];
     [self show];
+    self.consistentHide = false;
     return self;
 }
 
 - (EquationCursor*)initWithFrame:(NSRect)frameRect {
     self = [super initWithFrame:frameRect];
     [self show];
+    self.consistentHide = false;
     return self;
 }
 
@@ -34,14 +36,20 @@ int counter = 0;
 
 - (void) changeState: (NSNumber*) counterAtCall {
     if(counter == counterAtCall.intValue) {
-        [self setHidden:!self.hidden];
-        [self performSelector:@selector(changeState:) withObject:[NSNumber numberWithInt:counter] afterDelay:0.5];
+        if(self.hidden && !self.consistentHide) {
+            [self setHidden:false];
+            [self performSelector:@selector(changeState:) withObject:[NSNumber numberWithInt:counter] afterDelay:0.5];
+        }
+        else {
+            [self setHidden:true];
+            [self performSelector:@selector(changeState:) withObject:[NSNumber numberWithInt:counter] afterDelay:0.5];
+        }
     }
 }
 
 - (void) show {
     counter++;
-    if(self.isHidden) {
+    if(self.isHidden && !self.consistentHide) {
         [self setHidden:false];
         [self performSelector:@selector(changeState:) withObject:[NSNumber numberWithInt:counter] afterDelay:0.5];
     }

@@ -15,6 +15,7 @@ NSMutableArray *undoList;
 int undoListCurrentIndex;
 int cursorCounter = 0;
 double minFontSize;
+BOOL isHighlighting = false;
 
 - (EquationField*) initWithFont: (FontManager*) f {
     self = [super init];
@@ -171,15 +172,33 @@ double minFontSize;
         // left-arrow
         if(theEvent.modifierFlags & NSShiftKeyMask) {
             // shift-left (highlighting)
+            isHighlighting = true;
+            [self shiftLeftArrowPressed];
         }
         else {
             // normal left
+            if(isHighlighting) {
+                [self undoHighlighting];
+                isHighlighting = false;
+                self.cursor.consistentHide = false;
+            }
             [self leftArrowPressed];
         }
     }
     else if(theEvent.keyCode == 124) {
         // right-arrow
-        [self rightArrowPressed];
+        if(theEvent.modifierFlags & NSShiftKeyMask) {
+            isHighlighting = true;
+            [self shiftRightArrowPressed];
+        }
+        else {
+            if(isHighlighting) {
+                [self undoHighlighting];
+                isHighlighting = false;
+                self.cursor.consistentHide = false;
+            }
+            [self rightArrowPressed];
+        }
     }
     else if(theEvent.keyCode == 125) {
         // down-arrow
@@ -1032,6 +1051,22 @@ double minFontSize;
     }
 }
 
+- (void) shiftLeftArrowPressed {
+    self.cursor.consistentHide = true;
+    [self.cursor hide];
+    [self.eq highlightLeft];
+    [self calculateHighlights];
+    [self callAllDrawRects];
+}
+
+- (void) shiftRightArrowPressed {
+    self.cursor.consistentHide = true;
+    [self.cursor hide];
+    [self.eq highlightRight];
+    [self calculateHighlights];
+    [self callAllDrawRects];
+}
+
 - (void) giveCursorToRightMostChild: (EquationFieldComponent*) eq {
     EquationFieldComponent *current = eq;
     while(current.eqChildren.count != 0) {
@@ -1123,6 +1158,12 @@ double minFontSize;
 
 - (void) calculateHighlights {
     [self.eq calculateHighlights:1];
+}
+
+- (void) undoHighlighting {
+    [self.eq resetAllCursorPointers];
+    [self.eq undoHighlighting];
+    [self callAllDrawRects];
 }
 
 @end

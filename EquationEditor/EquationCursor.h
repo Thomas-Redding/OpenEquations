@@ -10,6 +10,8 @@
 
 @interface EquationCursor : NSView
 
+@property BOOL consistentHide;
+
 - (void) changeState: (NSNumber*) counterAtCall;
 - (void) show;
 - (void) hide;

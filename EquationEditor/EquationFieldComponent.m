@@ -27,6 +27,8 @@ double heightRatio = -1;
     self.startCursorLocation = -1;
     self.endCursorLocation = -1;
     self.shouldBeCompletelyHighlighted = false;
+    self.highlightLeafLeft = -1;
+    self.highlightLeafRight = -1;
     
     self.layer.borderColor = [NSColor orangeColor].CGColor;
     
@@ -47,21 +49,18 @@ double heightRatio = -1;
         [[NSColor colorWithCalibratedRed:0.0 green:0.0 blue:0.0 alpha:1.0] setFill];
         NSRectFill(NSMakeRect(x, self.frame.size.height-thickness, self.frame.size.width-x-100, thickness));
     }
-    else if(self.eqFormat == LEAF) {
-        /*
-        [[NSColor colorWithCalibratedRed:1.0 green:0.0 blue:0.0 alpha:0.5] setFill];
-        NSRectFill(dirtyRect);
-        */
-    }
     
-    bool showBoundaries = false;
-    if(showBoundaries) {
-        double borderWidth = 2;
-        [[NSColor colorWithRed:1.0 green:0.0 blue:1.0 alpha:1] setFill];
-        NSRectFill(NSMakeRect(dirtyRect.origin.x, dirtyRect.origin.y, dirtyRect.size.width, borderWidth));
-        NSRectFill(NSMakeRect(dirtyRect.origin.x, dirtyRect.origin.y+dirtyRect.size.height-borderWidth, dirtyRect.size.width, borderWidth));
-        NSRectFill(NSMakeRect(dirtyRect.origin.x, dirtyRect.origin.y, borderWidth, dirtyRect.size.height));
-        NSRectFill(NSMakeRect(dirtyRect.origin.x+dirtyRect.size.width-borderWidth, dirtyRect.origin.y, borderWidth, dirtyRect.size.height));
+    if(self.shouldBeCompletelyHighlighted) {
+        [[NSColor colorWithRed:0.0 green:0.0 blue:1.0 alpha:0.1] setFill];
+        NSRectFill(dirtyRect);
+    }
+    else if(self.eqFormat == LEAF && (self.highlightLeafLeft != -1 || self.highlightLeafRight != -1)) {
+        NSDictionary *attr = [self.eqTextField.attributedStringValue attributesAtIndex:0 effectiveRange:nil];
+        double x = [[[NSAttributedString alloc] initWithString:[self.eqTextField.stringValue substringToIndex:self.highlightLeafLeft] attributes:attr] size].width;
+        NSSize size = [[[NSAttributedString alloc] initWithString:[self.eqTextField.stringValue substringWithRange:NSMakeRange(self.highlightLeafLeft, self.highlightLeafRight-self.highlightLeafLeft)] attributes:attr] size];
+        
+        [[NSColor colorWithRed:0.0 green:0.0 blue:1.0 alpha:0.1] setFill];
+        NSRectFill(NSMakeRect(self.eqTextField.frame.origin.x+x, self.eqTextField.frame.origin.y, size.width, size.height));
     }
     
     // draw highlighting
@@ -610,7 +609,7 @@ double heightRatio = -1;
         return [NSString stringWithFormat:@"\\log_{%@}{%@}", [self.eqChildren[0] toLaTeX], [self.eqChildren[1] toLaTeX]];
     }
     else if(self.eqFormat == PARENTHESES) {
-        return [NSString stringWithFormat:@"\left(%@\right)", [self.eqChildren[0] toLaTeX]];
+        return [NSString stringWithFormat:@"\\left(%@\\right)", [self.eqChildren[0] toLaTeX]];
     }
     else {
         // error
@@ -793,17 +792,48 @@ double heightRatio = -1;
 - (void) calculateHighlights: (int) condition {
     /*
      condition:
-     0 - highlight nothing (no need to recurse)
+     0 - highlight nothing
      1 - highlight some things (recurse)
-     2 - highlight everything (no need to recurse)
+     2 - highlight everything
+     
+     if 0 or 1:
+        recurse saying "don't highlight", because the parent (self) will take care of it
     */
     if(condition == 0) {
         self.shouldBeCompletelyHighlighted = false;
+        if(self.eqFormat == LEAF) {
+            self.highlightLeafLeft = -1;
+            self.highlightLeafRight = -1;
+        }
+        for(int i=0; i<self.eqChildren.count; i++) {
+            [self.eqChildren[i] calculateHighlights:0];
+        }
     }
     else if(condition == 2) {
         self.shouldBeCompletelyHighlighted = true;
+        if(self.eqFormat == LEAF) {
+            self.highlightLeafLeft = -1;
+            self.highlightLeafRight = -1;
+        }
+        for(int i=0; i<self.eqChildren.count; i++) {
+            [self.eqChildren[i] calculateHighlights:0];
+        }
     }
     else {
+        if(self.eqFormat == LEAF) {
+            if(self.startCursorLocation == -1) {
+                self.highlightLeafLeft = -1;
+                self.highlightLeafRight = self.endCursorLocation;
+            }
+            else if(self.endCursorLocation == -1) {
+                self.highlightLeafLeft = self.startCursorLocation;
+                self.highlightLeafRight = (int) self.eqTextField.stringValue.length;
+            }
+            else {
+                self.highlightLeafLeft = fmin(self.startCursorLocation, self.endCursorLocation);
+                self.highlightLeafRight = fmax(self.startCursorLocation, self.endCursorLocation);
+            }
+        }
         for(int i=0; i<self.eqChildren.count; i++) {
             if([self.eqChildren[i] eqFormat] == LEAF) {
                 [self.eqChildren[i] calculateHighlights: 1];
@@ -820,6 +850,76 @@ double heightRatio = -1;
                 }
             }
         }
+    }
+}
+
+- (void) highlightLeft {
+    if(self.eqFormat == LEAF) {
+        if(self.endCursorLocation == -1) {
+            // start highlighting
+            if(self.startCursorLocation > 0) {
+                self.endCursorLocation = self.startCursorLocation - 1;
+            }
+        }
+        else {
+            // continue highlighting
+            if(self.endCursorLocation > 0) {
+                self.endCursorLocation--;
+            }
+        }
+    }
+    else {
+        // pass it on to children
+        if(self.childWithEndCursor == -1) {
+            // start highlighting
+            [self.eqChildren[self.childWithStartCursor] highlightLeft];
+        }
+        else {
+            // continue highlighting
+            [self.eqChildren[self.childWithEndCursor] highlightLeft];
+        }
+    }
+}
+
+- (void) highlightRight {
+    if(self.eqFormat == LEAF) {
+        if(self.endCursorLocation == -1) {
+            // start highlighting
+            if(self.startCursorLocation < self.eqTextField.stringValue.length) {
+                self.endCursorLocation = self.startCursorLocation + 1;
+            }
+        }
+        else {
+            // continue highlighting
+            if(self.endCursorLocation < self.eqTextField.stringValue.length) {
+                self.endCursorLocation++;
+            }
+        }
+    }
+    else {
+        // pass it on to children
+        if(self.childWithEndCursor == -1) {
+            // start highlighting
+            [self.eqChildren[self.childWithStartCursor] highlightRight];
+        }
+        else {
+            // continue highlighting
+            [self.eqChildren[self.childWithEndCursor] highlightRight];
+        }
+    }
+}
+
+- (void) undoHighlighting {
+    self.childWithStartCursor = -1;
+    self.childWithEndCursor = -1;
+    self.startCursorLocation = -1;
+    self.endCursorLocation = -1;
+    self.shouldBeCompletelyHighlighted = false;
+    self.highlightLeafLeft = -1;
+    self.highlightLeafRight = -1;
+    
+    for(int i=0; i<self.eqChildren.count; i++) {
+        [self undoHighlighting];
     }
 }
 

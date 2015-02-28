@@ -25,6 +25,8 @@
 @property int startCursorLocation;
 @property int endCursorLocation;
 @property BOOL shouldBeCompletelyHighlighted;
+@property int highlightLeafLeft;
+@property int highlightLeafRight;
 
 @property EquationFieldComponentType eqFormat;
 @property EquationTextField* eqTextField;
@@ -69,5 +71,8 @@
 - (NSArray*) toArray;
 - (void) callAllDrawRects;
 - (void) calculateHighlights: (int) condition;
+- (void) highlightLeft;
+- (void) highlightRight;
+- (void) undoHighlighting;
 
 @end
