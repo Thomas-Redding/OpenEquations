@@ -178,7 +178,7 @@ BOOL isHighlighting = false;
         else {
             // normal left
             if(isHighlighting) {
-                [self undoHighlighting];
+                [self undoHighlighting: -1];
                 isHighlighting = false;
                 self.cursor.consistentHide = false;
             }
@@ -193,7 +193,7 @@ BOOL isHighlighting = false;
         }
         else {
             if(isHighlighting) {
-                [self undoHighlighting];
+                [self undoHighlighting: 1];
                 isHighlighting = false;
                 self.cursor.consistentHide = false;
             }
@@ -1160,10 +1160,63 @@ BOOL isHighlighting = false;
     [self.eq calculateHighlights:1];
 }
 
-- (void) undoHighlighting {
+- (void) undoHighlighting: (int) direction {
+    EquationFieldComponent *eq = self.eq;
+    int first = 0;
+    while(eq.childWithStartCursor != -1) {
+        if(eq.childWithStartCursor < eq.childWithEndCursor) {
+            first = -1;
+            break;
+        }
+        else if(eq.childWithStartCursor > eq.childWithEndCursor) {
+            first = 1;
+            break;
+        }
+        else {
+            eq = eq.eqChildren[eq.childWithStartCursor];
+        }
+    }
+    
+    int newCursorLocation;
+    if(first == 0) {
+        if(eq.startCursorLocation >= eq.endCursorLocation) {
+            // start is first
+            if(direction == 1) {
+                newCursorLocation = eq.startCursorLocation;
+            }
+            else {
+                newCursorLocation = eq.endCursorLocation;
+            }
+        }
+        else {
+            // end is first
+            if(direction == 1) {
+                newCursorLocation = eq.endCursorLocation;
+            }
+            else {
+                newCursorLocation = eq.startCursorLocation;
+            }
+        }
+    }
+
     [self.eq resetAllCursorPointers];
     [self.eq undoHighlighting];
     [self callAllDrawRects];
+    
+    eq.startCursorLocation = newCursorLocation;
+    while(eq.parent != nil) {
+        for(int i=0; i<eq.parent.eqChildren.count; i++) {
+            if(eq.parent.eqChildren[i] == eq) {
+                eq.parent.childWithStartCursor = i;
+                break;
+            }
+        }
+        eq = eq.parent;
+    }
+    [self adjustCursorLocation];
+    
+    int q = 5;
+    q = 3;
 }
 
 @end
