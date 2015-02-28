@@ -24,6 +24,7 @@
 @property int childWithEndCursor;
 @property int startCursorLocation;
 @property int endCursorLocation;
+@property BOOL shouldBeCompletelyHighlighted;
 
 @property EquationFieldComponentType eqFormat;
 @property EquationTextField* eqTextField;
@@ -66,5 +67,7 @@
 - (void) deleteMyChildren;
 - (void) addHundredToWidth;
 - (NSArray*) toArray;
+- (void) callAllDrawRects;
+- (void) calculateHighlights: (int) condition;
 
 @end

@@ -305,6 +305,7 @@ double minFontSize;
 - (void) drawRect:(NSRect)dirtyRect {
     [[NSColor colorWithCalibratedRed:1.0 green:1.0 blue:1.0 alpha:1.0] setFill];
     NSRectFill(dirtyRect);
+    NSLog(@"top");
     [super drawRect:dirtyRect];
 }
 
@@ -1113,6 +1114,15 @@ double minFontSize;
         return true;
     }
     return false;
+}
+
+- (void) callAllDrawRects {
+    [self setNeedsDisplay:true];
+    [self.eq callAllDrawRects];
+}
+
+- (void) calculateHighlights {
+    [self.eq calculateHighlights:1];
 }
 
 @end

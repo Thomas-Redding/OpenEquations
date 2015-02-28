@@ -26,6 +26,7 @@ double heightRatio = -1;
     self.childWithEndCursor = -1;
     self.startCursorLocation = -1;
     self.endCursorLocation = -1;
+    self.shouldBeCompletelyHighlighted = false;
     
     self.layer.borderColor = [NSColor orangeColor].CGColor;
     
@@ -62,7 +63,6 @@ double heightRatio = -1;
         NSRectFill(NSMakeRect(dirtyRect.origin.x, dirtyRect.origin.y, borderWidth, dirtyRect.size.height));
         NSRectFill(NSMakeRect(dirtyRect.origin.x+dirtyRect.size.width-borderWidth, dirtyRect.origin.y, borderWidth, dirtyRect.size.height));
     }
-    
     
     // draw highlighting
     // todo
@@ -553,6 +553,16 @@ double heightRatio = -1;
             }
         }
     }
+    else if(self.eqFormat == PARENTHESES){
+        BOOL success = [self.eqChildren[0] setStartCursorToEq:x y:y];
+        if(success) {
+            self.childWithStartCursor = 0;
+            return true;
+        }
+        else {
+            self.childWithStartCursor = -1;
+        }
+    }
     else if(self.eqFormat == NORMAL){
         for(int i=0; i<self.eqChildren.count; i++) {
             if(x >= [self.eqChildren[i] frame].origin.x && x <= [self.eqChildren[i] frame].origin.x + [self.eqChildren[i] frame].size.width-100) {
@@ -771,6 +781,46 @@ double heightRatio = -1;
     }
     
     return rtn;
+}
+
+- (void) callAllDrawRects {
+    [self setNeedsDisplay:true];
+    for(int i=0; i<self.eqChildren.count; i++) {
+        [self.eqChildren[i] callAllDrawRects];
+    }
+}
+
+- (void) calculateHighlights: (int) condition {
+    /*
+     condition:
+     0 - highlight nothing (no need to recurse)
+     1 - highlight some things (recurse)
+     2 - highlight everything (no need to recurse)
+    */
+    if(condition == 0) {
+        self.shouldBeCompletelyHighlighted = false;
+    }
+    else if(condition == 2) {
+        self.shouldBeCompletelyHighlighted = true;
+    }
+    else {
+        for(int i=0; i<self.eqChildren.count; i++) {
+            if([self.eqChildren[i] eqFormat] == LEAF) {
+                [self.eqChildren[i] calculateHighlights: 1];
+            }
+            else {
+                if(i > self.childWithStartCursor && i < self.childWithEndCursor) {
+                    [self.eqChildren[i] calculateHighlights: 2];
+                }
+                else if(i == self.childWithStartCursor) {
+                    [self.eqChildren[i] calculateHighlights: 1];
+                }
+                else if(i == self.childWithEndCursor) {
+                    [self.eqChildren[i] calculateHighlights: 1];
+                }
+            }
+        }
+    }
 }
 
 @end
