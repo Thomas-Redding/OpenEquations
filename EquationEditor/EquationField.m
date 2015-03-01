@@ -1154,6 +1154,33 @@ BOOL isHighlighting = false;
     return false;
 }
 
+- (void) setEndCursorToEq: (double) x y: (double) y {
+    [self.cursor show];
+    if(x >=0 && x <= self.eq.frame.size.width-100 && y >= self.eq.frame.origin.y && y <= self.eq.frame.origin.y+self.eq.frame.size.height) {
+        [self.eq setEndCursorEq:x y:y];
+    }
+    else if(x >= self.eq.frame.size.width-100) {
+        [self.eq resetAllCursorPointers];
+        EquationFieldComponent *current = self.eq;
+        while(current.eqChildren.count != 0) {
+            current.childWithEndCursor = (int) current.eqChildren.count - 1;
+            current = current.eqChildren[current.eqChildren.count-1];
+        }
+        current.endCursorLocation = (int) current.eqTextField.stringValue.length;
+    }
+    else if(self.eq.eqFormat == LEAF && self.eq.endCursorLocation == -1) {
+        self.eq.endCursorLocation = 0;
+    }
+    else if(self.eq.eqFormat != LEAF && self.eq.childWithEndCursor == -1) {
+        EquationFieldComponent *current = self.eq;
+        while(current.eqChildren.count != 0) {
+            current.childWithEndCursor = 0;
+            current = current.eqChildren[0];
+        }
+        current.endCursorLocation = 0;
+    }
+}
+
 - (void) callAllDrawRects {
     [self setNeedsDisplay:true];
     [self.eq callAllDrawRects];

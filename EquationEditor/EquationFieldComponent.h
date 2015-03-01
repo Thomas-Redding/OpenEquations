@@ -74,5 +74,6 @@
 - (void) highlightLeft;
 - (void) highlightRight;
 - (void) undoHighlighting;
+- (void) setEndCursorEq: (double) x y: (double) y;
 
 @end

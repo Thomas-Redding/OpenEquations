@@ -1074,4 +1074,87 @@ double heightRatio = -1;
     }
 }
 
+- (void) setEndCursorEq: (double) x y: (double) y {
+    x -= self.frame.origin.x;
+    y -= self.frame.origin.y;
+    if(self.eqFormat == LEAF) {
+        self.childWithEndCursor = -1;
+        self.endCursorLocation = 0;
+        NSDictionary *attr = @{NSFontAttributeName : [self.fontManager getFont:self.eqTextField.frame.size.height/self.options.fontSizeToLeafA]};
+        double xpos = 0;
+        [self.eqTextField setContainsCursor:true];
+        for(int i=0; i<=self.eqTextField.stringValue.length; i++) {
+            double width = [[[NSAttributedString alloc] initWithString:[self.eqTextField.stringValue substringToIndex:i] attributes:attr] size].width;
+            if((xpos + width)/2 <= x) {
+                self.endCursorLocation = i;
+            }
+            else {
+                return;
+            }
+            xpos = width;
+        }
+        return;
+    }
+    else if(self.eqFormat == DIVISION) {
+        if(y >= self.heightRatio*self.frame.size.height) {
+            [self.eqChildren[0] setEndCursorEq:x y:y];
+        }
+        else {
+            [self.eqChildren[1] setEndCursorEq:x y:y];
+        }
+    }
+    else if(self.eqFormat == SUPERSCRIPT) {
+        [self.eqChildren[0] setEndCursorEq:x y:y];
+    }
+    else if(self.eqFormat == SQUAREROOT) {
+        [self.eqChildren[0] setEndCursorEq:x y:y];
+    }
+    else if(self.eqFormat == SUMMATION) {
+        double leftWidth = fmax(fmax([self.eqChildren[0] frame].size.width-100, [self.eqChildren[1] frame].size.width-100), self.eqImageView.frame.size.width);
+        if(x < leftWidth) {
+            if(y < [self.eqChildren[0] frame].size.height + self.eqImageView.frame.size.height/2) {
+                [self.eqChildren[0] setEndCursorEq:x y:y];
+            }
+            else {
+                [self.eqChildren[1] setEndCursorEq:x y:y];
+            }
+        }
+        else {
+            [self.eqChildren[2] setEndCursorEq:x y:y];
+        }
+    }
+    else if(self.eqFormat == INTEGRATION) {
+        double leftWidth = fmax(fmax([self.eqChildren[0] frame].size.width-100, [self.eqChildren[1] frame].size.width-100), self.eqImageView.frame.size.width);
+        if(x < leftWidth) {
+            if(y < [self.eqChildren[0] frame].size.height + self.eqImageView.frame.size.height/2) {
+                [self.eqChildren[0] setEndCursorEq:x y:y];
+            }
+            else {
+                [self.eqChildren[1] setEndCursorEq:x y:y];
+            }
+        }
+        else {
+            [self.eqChildren[2] setEndCursorEq:x y:y];
+        }
+    }
+    else if(self.eqFormat == INTEGRATION) {
+        if(x < self.eqImageView.frame.size.width+[self.eqChildren[0] frame].size.width) {
+            [self.eqChildren[0] setEndCursorEq:x y:y];
+        }
+        else {
+            [self.eqChildren[1] setEndCursorEq:x y:y];
+        }
+    }
+    else if(self.eqFormat == PARENTHESES){
+        [self.eqChildren[0] setEndCursorEq:x y:y];
+    }
+    else if(self.eqFormat == NORMAL){
+        for(int i=0; i<self.eqChildren.count; i++) {
+            if(x >= [self.eqChildren[i] frame].origin.x && x <= [self.eqChildren[i] frame].origin.x + [self.eqChildren[i] frame].size.width-100) {
+                [self.eqChildren[i] setEndCursorEq:x y:y];
+            }
+        }
+    }
+}
+
 @end
