@@ -46,6 +46,8 @@ BOOL isHighlighting = false;
 
 - (void) completeRecalculation {
     // make preliminary size requests
+    [self.eq simplifyStructure];
+    
     [self.eq makeSizeRequest:options.maxFontSize];
     
     double bufferWidth = 0.1;
@@ -164,9 +166,13 @@ BOOL isHighlighting = false;
     
     if(theEvent.keyCode == 36) {
         // return key
+        [self printStructure];
     }
     else if(theEvent.keyCode == 48) {
         // tab key
+        
+        int q = 5;
+        q = 3;
     }
     else if(theEvent.keyCode == 51) {
         // delete key
@@ -451,7 +457,6 @@ BOOL isHighlighting = false;
 - (void) deleteKeyPressed {
     if(isHighlighting) {
         [self deleteHighlightedPart];
-        [self undoHighlighting:-1];
     }
     else {
         if(self.eq.childWithEndCursor != -1) {
@@ -549,8 +554,6 @@ BOOL isHighlighting = false;
     
     [[componentWithCursor.eqChildren[1] eqChildren][0] setStartCursorLocation:0];
     
-    [self.eq simplifyStructure];
-    
     return true;
 }
 
@@ -602,8 +605,6 @@ BOOL isHighlighting = false;
     componentWithCursor.childWithStartCursor = 1;
     [componentWithCursor.eqChildren[1] setChildWithStartCursor:0];
     [[componentWithCursor.eqChildren[1] eqChildren][0] setStartCursorLocation:0];
-    
-    [self.eq simplifyStructure];
     
     return true;
 }
@@ -662,8 +663,6 @@ BOOL isHighlighting = false;
     componentWithCursor.childWithStartCursor = 1;
     [componentWithCursor.eqChildren[1] setChildWithStartCursor:0];
     [[componentWithCursor.eqChildren[1] eqChildren][0] setStartCursorLocation:0];
-    
-    [self.eq simplifyStructure];
     
     return true;
 }
@@ -731,8 +730,6 @@ BOOL isHighlighting = false;
     [componentWithCursor.eqChildren[1] setChildWithStartCursor:0];
     [[componentWithCursor.eqChildren[1] eqChildren][0] setStartCursorLocation:0];
     
-    [self.eq simplifyStructure];
-    
     return true;
 }
 
@@ -799,8 +796,6 @@ BOOL isHighlighting = false;
     [componentWithCursor.eqChildren[1] setChildWithStartCursor:0];
     [[componentWithCursor.eqChildren[1] eqChildren][0] setStartCursorLocation:0];
     
-    [self.eq simplifyStructure];
-    
     return true;
 }
 
@@ -864,8 +859,6 @@ BOOL isHighlighting = false;
     componentWithCursor.childWithStartCursor = 1;
     [componentWithCursor.eqChildren[1] setChildWithStartCursor:0];
     [[componentWithCursor.eqChildren[1] eqChildren][0] setStartCursorLocation:0];
-    
-    [self.eq simplifyStructure];
     
     return true;
 }
@@ -1210,6 +1203,7 @@ BOOL isHighlighting = false;
 - (void) undoHighlighting: (int) direction {
     EquationFieldComponent *eq = self.eq;
     int first = 0;
+    
     if(direction == -1) {
         while(eq.childWithStartCursor != -1) {
             
@@ -1298,8 +1292,56 @@ BOOL isHighlighting = false;
     [self undoHighlighting:-1];
     isHighlighting = false;
     self.cursor.consistentHide = false;
+    [self completeRecalculation];
     [self adjustCursorLocation];
     [self patchCursorGlitch];
+}
+
+
+- (void) printStructure {
+    NSLog(@"%@", [self toDebugString:self.eq]);
+}
+
+- (NSString*) toDebugString: (EquationFieldComponent*) eq {
+    NSMutableString *str = [[NSMutableString alloc] initWithString:@"{"];
+    if(eq.eqFormat == DIVISION) {
+        [str appendString:@"DIVISION"];
+    }
+    else if(eq.eqFormat == SUPERSCRIPT) {
+        [str appendString:@"SUPERSCRIPT"];
+    }
+    else if(eq.eqFormat == SQUAREROOT) {
+        [str appendString:@"SQUAREROOT"];
+    }
+    else if(eq.eqFormat == SUMMATION) {
+        [str appendString:@"SUMMATION"];
+    }
+    else if(eq.eqFormat == INTEGRATION) {
+        [str appendString:@"INTEGRATION"];
+    }
+    else if(eq.eqFormat == LOGBASE) {
+        [str appendString:@"LOGBASE"];
+    }
+    else if(eq.eqFormat == PARENTHESES) {
+        [str appendString:@"PARENTHESES"];
+    }
+    else if(eq.eqFormat == NORMAL) {
+        [str appendString:@"NORMAL"];
+    }
+    else if(eq.eqFormat == LEAF) {
+        [str appendString:eq.eqTextField.stringValue];
+    }
+    if(eq.childWithStartCursor != -1 || eq.childWithEndCursor != -1) {
+        [str appendFormat:@"(%i,%i)", eq.childWithStartCursor, eq.childWithEndCursor];
+    }
+    if(eq.eqChildren.count != 0) {
+        [str appendString:@":"];
+        for(int i=0; i<eq.eqChildren.count; i++) {
+            [str appendString:[self toDebugString:eq.eqChildren[i]]];
+        }
+    }
+    [str appendString:@"}"];
+    return str;
 }
 
 @end

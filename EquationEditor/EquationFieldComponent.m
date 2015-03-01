@@ -708,6 +708,7 @@ double heightRatio = -1;
                 
                 for(int j=0; j<[self.eqChildren[i] eqChildren].count; j++) {
                     [self.eqChildren insertObject:[self.eqChildren[i] eqChildren][j] atIndex:i+j+1];
+                    [self.eqChildren[i+j+1] setParent:self];
                 }
                 [self.eqChildren removeObjectAtIndex:i];
                 i--;
