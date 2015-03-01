@@ -187,6 +187,7 @@ BOOL isHighlighting = false;
                 self.cursor.consistentHide = false;
             }
             [self leftArrowPressed];
+            [self adjustCursorLocation];
         }
     }
     else if(theEvent.keyCode == 124) {
@@ -202,6 +203,7 @@ BOOL isHighlighting = false;
                 self.cursor.consistentHide = false;
             }
             [self rightArrowPressed];
+            [self adjustCursorLocation];
         }
     }
     else if(theEvent.keyCode == 125) {
@@ -1025,11 +1027,12 @@ BOOL isHighlighting = false;
     [self.cursor show];
     
     if(componentWithCursor.startCursorLocation == componentWithCursor.eqTextField.stringValue.length) {
+        
         // appeal to parent for cursor to be moved right
         componentWithCursor.startCursorLocation = -1;
         EquationFieldComponent *parent;
         int i;
-        
+        // climb up ancestors until an ancestor has a chlid to the right
         for(i=2; i<=descendants.count; i++) {
             parent = descendants[descendants.count - i];
             if(parent.childWithStartCursor != (int) parent.eqChildren.count-1) {
@@ -1042,7 +1045,7 @@ BOOL isHighlighting = false;
             componentWithCursor.startCursorLocation = (int) componentWithCursor.eqTextField.stringValue.length;
             return;
         }
-        
+        // set the childWithStartCursor "pointers" to -1 for the old cursor location
         for(i=2; i<=descendants.count; i++) {
             parent = descendants[descendants.count - i];
             if(parent.childWithStartCursor != (int) parent.eqChildren.count-1) {
@@ -1050,13 +1053,13 @@ BOOL isHighlighting = false;
             }
             parent.childWithStartCursor = -1;
         }
-        
+        // have the ancestor with a child to the right (i.e. who can receive the cursor) send teh cursor to that child
         parent.childWithStartCursor++;
+        
         [self giveCursorToLeftMostChild:parent.eqChildren[parent.childWithStartCursor]];
     }
     else {
         componentWithCursor.startCursorLocation++;
-        [self adjustCursorLocation];
     }
 }
 
