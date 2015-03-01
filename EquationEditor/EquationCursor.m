@@ -35,7 +35,6 @@ int counter = 0;
 }
 
 - (void) changeState: (NSNumber*) counterAtCall {
-    NSLog(@"%i:%i:%i", self.consistentHide, self.hidden, self.consistentHide);
     if(counter == counterAtCall.intValue) {
         if(self.hidden && !self.consistentHide) {
             

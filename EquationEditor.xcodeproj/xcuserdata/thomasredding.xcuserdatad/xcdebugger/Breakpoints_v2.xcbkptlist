@@ -42,11 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "EquationEditor/EquationFieldComponent.m"
-            timestampString = "446883882.157654"
+            timestampString = "446920177.062659"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "807"
-            endingLineNumber = "807"
+            startingLineNumber = "811"
+            endingLineNumber = "811"
             landmarkName = "-calculateHighlights:isStartLeft:"
             landmarkType = "5">
          </BreakpointContent>
@@ -54,16 +54,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "No"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "EquationEditor/EquationCursor.m"
-            timestampString = "446918793.176936"
+            filePath = "EquationEditor/EquationFieldComponent.m"
+            timestampString = "446920846.250875"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "38"
-            endingLineNumber = "38"
-            landmarkName = "-changeState:"
+            startingLineNumber = "1235"
+            endingLineNumber = "1235"
+            landmarkName = "-deleteHighlightedPart"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

@@ -738,7 +738,11 @@ double heightRatio = -1;
 }
 
 - (void) deleteMyChildren {
-    //
+    while(self.eqChildren.count != 0) {
+        [self.eqChildren[0] deleteMyChildren];
+        [self.eqChildren[0] removeFromSuperview];
+        [self.eqChildren removeObjectAtIndex:0];
+    }
 }
 
 - (NSArray*) toArray {
@@ -1168,6 +1172,69 @@ double heightRatio = -1;
                 self.childWithEndCursor = i;
             }
         }
+    }
+}
+
+- (void) deleteHighlightedPart {
+    if(self.eqFormat == LEAF) {
+        NSDictionary *attr = @{NSFontAttributeName : [self.fontManager getFont:self.frame.size.height/self.options.fontSizeToLeafA]};
+        if(self.highlightLeafLeft == -1) {
+            if(self.highlightLeafRight == -1) {
+                // keep entire string - do nothing
+            }
+            else {
+                // keep right-part of string
+                NSAttributedString *str = [[NSAttributedString alloc] initWithString:[self.eqTextField.stringValue substringFromIndex:self.highlightLeafRight] attributes:attr];
+                self.eqTextField.attributedStringValue = str;
+                if(self.highlightLeafRight == self.startCursorLocation) {
+                    self.startCursorLocation = 0;
+                }
+                if(self.highlightLeafRight == self.endCursorLocation) {
+                    self.endCursorLocation = 0;
+                }
+            }
+        }
+        else {
+            if(self.highlightLeafRight == -1) {
+                // keep left-part of string
+                NSAttributedString *str = [[NSAttributedString alloc] initWithString:[self.eqTextField.stringValue substringToIndex:self.highlightLeafRight] attributes:attr];
+                self.eqTextField.attributedStringValue = str;
+                if(self.highlightLeafLeft == self.startCursorLocation) {
+                    self.startCursorLocation = (int) self.eqTextField.attributedStringValue.length;
+                }
+                if(self.highlightLeafLeft == self.endCursorLocation) {
+                    self.endCursorLocation = (int) self.eqTextField.attributedStringValue.length;
+                }
+            }
+            else {
+                // remove middle part of string
+                NSString *first = [self.eqTextField.stringValue substringToIndex:self.highlightLeafLeft];
+                NSString *second = [self.eqTextField.stringValue substringFromIndex:self.highlightLeafRight];
+                NSString *newString = [[NSString alloc] initWithFormat:@"%@%@", first, second];
+                NSAttributedString *str = [[NSAttributedString alloc] initWithString:newString attributes:attr];
+                self.eqTextField.attributedStringValue = str;
+                if(self.highlightLeafLeft == self.startCursorLocation || self.highlightLeafRight == self.startCursorLocation) {
+                    self.startCursorLocation = (int) first.length;
+                }
+                if(self.highlightLeafLeft == self.endCursorLocation || self.highlightLeafRight == self.endCursorLocation) {
+                    self.endCursorLocation = (int) first.length;
+                }
+            }
+        }
+    }
+    else if (self.eqFormat == NORMAL) {
+        for(int i=0; i<self.eqChildren.count; i++) {
+            if([self.eqChildren[i] shouldBeCompletelyHighlighted]) {
+                [self.eqChildren[i] deleteMyChildren];
+                [self.eqChildren removeObjectAtIndex:i];
+                i--;
+            }
+        }
+    }
+    else {
+        
+        int q = 5;
+        q = 3;
     }
 }
 

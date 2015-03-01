@@ -447,40 +447,45 @@ BOOL isHighlighting = false;
 }
 
 - (void) deleteKeyPressed {
-    if(self.eq.childWithEndCursor != -1) {
-        [self deleteHighlighted];
+    if(isHighlighting) {
+        [self deleteHighlightedPart];
+        [self undoHighlighting:-1];
     }
     else {
-        EquationFieldComponent *componentWithCursor = self.eq;
-        while(componentWithCursor.childWithStartCursor != -1) {
-            componentWithCursor = componentWithCursor.eqChildren[componentWithCursor.childWithStartCursor];
-        }
-        if(componentWithCursor.startCursorLocation == -1) {
-            // error
-            return;
-        }
-        
-        NSString *strA;
-        if(componentWithCursor.startCursorLocation == 0) {
-            // delete a component
-            if(componentWithCursor.eqFormat == LEAF) {
-                // highlight component to left
-                // todo
-            }
-            else {
-                // highlight self
-                // todo
-            }
+        if(self.eq.childWithEndCursor != -1) {
+            [self deleteHighlighted];
         }
         else {
-            // delete a single character
-            strA = [componentWithCursor.eqTextField.stringValue substringToIndex:componentWithCursor.startCursorLocation-1];
-            NSString *strB = [componentWithCursor.eqTextField.stringValue substringFromIndex:componentWithCursor.startCursorLocation];
-            NSString *newString = [NSString stringWithFormat:@"%@%@", strA, strB];
-            NSDictionary *attr = [componentWithCursor.eqTextField.attributedStringValue attributesAtIndex:0 effectiveRange:nil];
-            componentWithCursor.eqTextField.attributedStringValue = [[NSAttributedString alloc] initWithString:newString attributes:attr];
-            componentWithCursor.startCursorLocation--;
-            [self completeRecalculation];
+            EquationFieldComponent *componentWithCursor = self.eq;
+            while(componentWithCursor.childWithStartCursor != -1) {
+                componentWithCursor = componentWithCursor.eqChildren[componentWithCursor.childWithStartCursor];
+            }
+            if(componentWithCursor.startCursorLocation == -1) {
+                // error
+                return;
+            }
+            
+            NSString *strA;
+            if(componentWithCursor.startCursorLocation == 0) {
+                if(componentWithCursor.eqFormat == LEAF) {
+                    // highlight component to left
+                    // todo
+                }
+                else {
+                    // highlight self
+                    // todo
+                }
+            }
+            else {
+                // delete a single character
+                strA = [componentWithCursor.eqTextField.stringValue substringToIndex:componentWithCursor.startCursorLocation-1];
+                NSString *strB = [componentWithCursor.eqTextField.stringValue substringFromIndex:componentWithCursor.startCursorLocation];
+                NSString *newString = [NSString stringWithFormat:@"%@%@", strA, strB];
+                NSDictionary *attr = [componentWithCursor.eqTextField.attributedStringValue attributesAtIndex:0 effectiveRange:nil];
+                componentWithCursor.eqTextField.attributedStringValue = [[NSAttributedString alloc] initWithString:newString attributes:attr];
+                componentWithCursor.startCursorLocation--;
+                [self completeRecalculation];
+            }
         }
     }
 }
@@ -1283,6 +1288,15 @@ BOOL isHighlighting = false;
 - (void) patchCursorGlitch {
     [self.cursor removeFromSuperview];
     [self addSubview:self.cursor];
+}
+
+- (void) deleteHighlightedPart {
+    [self.eq deleteHighlightedPart];
+    [self undoHighlighting:-1];
+    isHighlighting = false;
+    self.cursor.consistentHide = false;
+    [self adjustCursorLocation];
+    [self patchCursorGlitch];
 }
 
 @end
