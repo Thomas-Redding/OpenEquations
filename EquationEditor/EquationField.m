@@ -177,6 +177,7 @@ BOOL isHighlighting = false;
         }
         else {
             // normal left
+            NSLog(@"%i", isHighlighting);
             if(isHighlighting) {
                 [self undoHighlighting: -1];
                 isHighlighting = false;
@@ -1162,19 +1163,38 @@ BOOL isHighlighting = false;
 - (void) undoHighlighting: (int) direction {
     EquationFieldComponent *eq = self.eq;
     int first = 0;
-    while(eq.childWithStartCursor != -1) {
-        if(eq.childWithStartCursor < eq.childWithEndCursor) {
-            first = -1;
-            break;
-        }
-        else if(eq.childWithStartCursor > eq.childWithEndCursor) {
-            first = 1;
-            break;
-        }
-        else {
-            eq = eq.eqChildren[eq.childWithStartCursor];
+    
+    if(direction == -1) {
+        while(eq.childWithStartCursor != -1) {
+            if(eq.childWithStartCursor < eq.childWithEndCursor) {
+                first = 1;
+                eq = eq.eqChildren[eq.childWithStartCursor];
+            }
+            else if(eq.childWithEndCursor < eq.childWithStartCursor) {
+                first = -1;
+                eq = eq.eqChildren[eq.childWithEndCursor];
+            }
+            else {
+                eq = eq.eqChildren[eq.childWithStartCursor];
+            }
         }
     }
+    else {
+        while(eq.childWithStartCursor != -1) {
+            if(eq.childWithStartCursor > eq.childWithEndCursor) {
+                first = 1;
+                eq = eq.eqChildren[eq.childWithStartCursor];
+            }
+            else if(eq.childWithEndCursor > eq.childWithStartCursor) {
+                first = -1;
+                eq = eq.eqChildren[eq.childWithEndCursor];
+            }
+            else {
+                eq = eq.eqChildren[eq.childWithStartCursor];
+            }
+        }
+    }
+    
     
     int newCursorLocation;
     if(first == 0) {
@@ -1197,7 +1217,10 @@ BOOL isHighlighting = false;
             }
         }
     }
-
+    else {
+        newCursorLocation = fmax(eq.startCursorLocation, eq.endCursorLocation);
+    }
+    
     [self.eq resetAllCursorPointers];
     [self.eq undoHighlighting];
     [self callAllDrawRects];
@@ -1212,6 +1235,7 @@ BOOL isHighlighting = false;
         }
         eq = eq.parent;
     }
+    
     [self adjustCursorLocation];
     
     int q = 5;

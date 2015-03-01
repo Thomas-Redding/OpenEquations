@@ -911,32 +911,50 @@ double heightRatio = -1;
                 self.endCursorLocation--;
                 return;
             }
+            else {
+                self.endCursorLocation = -1;
+            }
         }
         
+        int isLastLeaf = true;
         EquationFieldComponent *eq = self;
         while(eq.parent != nil) {
-            eq = eq.parent;
-            if(eq.childWithEndCursor == 0) {
-                eq.childWithEndCursor = -1;
+            if(eq.parent.eqChildren[0] == eq) {
+                // I am the last child
             }
             else {
-                while(eq.childWithEndCursor > 0) {
-                    eq.childWithEndCursor--;
-                    if([eq.eqChildren[eq.childWithEndCursor] eqFormat] == LEAF) {
-                        eq = eq.eqChildren[eq.childWithEndCursor];
+                isLastLeaf = false;
+                break;
+            }
+            eq = eq.parent;
+        }
+        
+        if(!isLastLeaf) {
+            eq = self;
+            while(eq.parent != nil) {
+                eq = eq.parent;
+                if(eq.childWithEndCursor == 0) {
+                    eq.childWithEndCursor = -1;
+                }
+                else {
+                    while(eq.childWithEndCursor > 0) {
+                        eq.childWithEndCursor--;
+                        if([eq.eqChildren[eq.childWithEndCursor] eqFormat] == LEAF) {
+                            eq = eq.eqChildren[eq.childWithEndCursor];
+                            break;
+                        }
+                    }
+                    if(eq.eqFormat == LEAF) {
                         break;
                     }
                 }
-                if(eq.eqFormat == LEAF) {
-                    break;
-                }
             }
+            while(eq.eqChildren.count != 0) {
+                eq.childWithEndCursor = 0;
+                eq = eq.eqChildren[eq.childWithEndCursor];
+            }
+            eq.endCursorLocation = (int) eq.eqTextField.stringValue.length;
         }
-        while(eq.eqChildren.count != 0) {
-            eq.childWithEndCursor = 0;
-            eq = eq.eqChildren[eq.childWithEndCursor];
-        }
-        eq.endCursorLocation = (int) eq.eqTextField.stringValue.length;
     }
     else {
         // pass it on to children
@@ -976,32 +994,51 @@ double heightRatio = -1;
                 self.endCursorLocation++;
                 return;
             }
+            else {
+                self.endCursorLocation = -1;
+            }
         }
         
+        int isLastLeaf = true;
         EquationFieldComponent *eq = self;
         while(eq.parent != nil) {
-            eq = eq.parent;
-            if(eq.childWithEndCursor == eq.eqChildren.count-1) {
-                eq.childWithEndCursor = -1;
+            if(eq.parent.eqChildren[eq.parent.eqChildren.count-1] == eq) {
+                // I am the last child
             }
             else {
-                while(eq.childWithEndCursor < self.eqChildren.count-1) {
-                    eq.childWithEndCursor++;
-                    if([eq.eqChildren[eq.childWithEndCursor] eqFormat] == LEAF) {
-                        eq = eq.eqChildren[eq.childWithEndCursor];
+                isLastLeaf = false;
+                break;
+            }
+            eq = eq.parent;
+        }
+        
+        if(!isLastLeaf) {
+            eq = self;
+            while(eq.parent != nil) {
+                eq = eq.parent;
+                if(eq.childWithEndCursor == eq.eqChildren.count-1) {
+                    eq.childWithEndCursor = -1;
+                }
+                else {
+                    while(eq.childWithEndCursor < self.eqChildren.count-1) {
+                        eq.childWithEndCursor++;
+                        if([eq.eqChildren[eq.childWithEndCursor] eqFormat] == LEAF) {
+                            eq = eq.eqChildren[eq.childWithEndCursor];
+                            break;
+                        }
+                    }
+                    if(eq.eqFormat == LEAF) {
                         break;
                     }
                 }
-                if(eq.eqFormat == LEAF) {
-                    break;
-                }
             }
+            
+            while(eq.eqChildren.count != 0) {
+                eq.childWithEndCursor = (int) eq.eqChildren.count - 1;
+                eq = eq.eqChildren[eq.childWithEndCursor];
+            }
+            eq.endCursorLocation = 0;
         }
-        while(eq.eqChildren.count != 0) {
-            eq.childWithEndCursor = (int) eq.eqChildren.count - 1;
-            eq = eq.eqChildren[eq.childWithEndCursor];
-        }
-        eq.endCursorLocation = 0;
     }
     else {
         // pass it on to children
