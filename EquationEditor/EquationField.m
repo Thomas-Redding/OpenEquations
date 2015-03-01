@@ -324,7 +324,6 @@ BOOL isHighlighting = false;
 - (void) drawRect:(NSRect)dirtyRect {
     [[NSColor colorWithCalibratedRed:1.0 green:1.0 blue:1.0 alpha:1.0] setFill];
     NSRectFill(dirtyRect);
-    NSLog(@"top");
     [super drawRect:dirtyRect];
 }
 
@@ -1157,7 +1156,7 @@ BOOL isHighlighting = false;
 }
 
 - (void) calculateHighlights {
-    [self.eq calculateHighlights:1];
+    [self.eq calculateHighlights:1 isStartLeft:0];
 }
 
 - (void) undoHighlighting: (int) direction {

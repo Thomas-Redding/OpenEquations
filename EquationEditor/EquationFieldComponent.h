@@ -70,7 +70,7 @@
 - (void) addHundredToWidth;
 - (NSArray*) toArray;
 - (void) callAllDrawRects;
-- (void) calculateHighlights: (int) condition;
+- (void) calculateHighlights: (int) condition isStartLeft: (int) isStartLeft;
 - (void) highlightLeft;
 - (void) highlightRight;
 - (void) undoHighlighting;

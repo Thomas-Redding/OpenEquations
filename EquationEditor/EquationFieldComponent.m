@@ -52,13 +52,12 @@ double heightRatio = -1;
     
     if(self.shouldBeCompletelyHighlighted) {
         [[NSColor colorWithRed:0.0 green:0.0 blue:1.0 alpha:0.1] setFill];
-        NSRectFill(dirtyRect);
+        NSRectFill(NSMakeRect(dirtyRect.origin.x, dirtyRect.origin.y, dirtyRect.size.width-100, dirtyRect.size.height));
     }
     else if(self.eqFormat == LEAF && (self.highlightLeafLeft != -1 || self.highlightLeafRight != -1)) {
         NSDictionary *attr = [self.eqTextField.attributedStringValue attributesAtIndex:0 effectiveRange:nil];
         double x = [[[NSAttributedString alloc] initWithString:[self.eqTextField.stringValue substringToIndex:self.highlightLeafLeft] attributes:attr] size].width;
         NSSize size = [[[NSAttributedString alloc] initWithString:[self.eqTextField.stringValue substringWithRange:NSMakeRange(self.highlightLeafLeft, self.highlightLeafRight-self.highlightLeafLeft)] attributes:attr] size];
-        
         [[NSColor colorWithRed:0.0 green:0.0 blue:1.0 alpha:0.1] setFill];
         NSRectFill(NSMakeRect(self.eqTextField.frame.origin.x+x, self.eqTextField.frame.origin.y, size.width, size.height));
     }
@@ -789,7 +788,7 @@ double heightRatio = -1;
     }
 }
 
-- (void) calculateHighlights: (int) condition {
+- (void) calculateHighlights: (int) condition isStartLeft: (int) isStartLeft {
     /*
      condition:
      0 - highlight nothing
@@ -798,7 +797,14 @@ double heightRatio = -1;
      
      if 0 or 1:
         recurse saying "don't highlight", because the parent (self) will take care of it
+     
+     
+     isStartLeft:
+     -1 - startCursor is right of endCursor (in another child)
+     0 - no info
+     1 - startCursor is left of endCursor (in another child)
     */
+    
     if(condition == 0) {
         self.shouldBeCompletelyHighlighted = false;
         if(self.eqFormat == LEAF) {
@@ -806,7 +812,7 @@ double heightRatio = -1;
             self.highlightLeafRight = -1;
         }
         for(int i=0; i<self.eqChildren.count; i++) {
-            [self.eqChildren[i] calculateHighlights:0];
+            [self.eqChildren[i] calculateHighlights:0 isStartLeft:isStartLeft];
         }
     }
     else if(condition == 2) {
@@ -816,38 +822,65 @@ double heightRatio = -1;
             self.highlightLeafRight = -1;
         }
         for(int i=0; i<self.eqChildren.count; i++) {
-            [self.eqChildren[i] calculateHighlights:0];
+            [self.eqChildren[i] calculateHighlights:0 isStartLeft:isStartLeft];
         }
     }
     else {
         if(self.eqFormat == LEAF) {
-            if(self.startCursorLocation == -1) {
-                self.highlightLeafLeft = -1;
-                self.highlightLeafRight = self.endCursorLocation;
-            }
-            else if(self.endCursorLocation == -1) {
-                self.highlightLeafLeft = self.startCursorLocation;
-                self.highlightLeafRight = (int) self.eqTextField.stringValue.length;
+            if(isStartLeft == 1) {
+                if(self.startCursorLocation == -1 && self.endCursorLocation == -1) {
+                    self.highlightLeafLeft = -1;
+                    self.highlightLeafRight = -1;
+                }
+                if(self.startCursorLocation == -1 && self.endCursorLocation != -1) {
+                    self.highlightLeafLeft = 0;
+                    self.highlightLeafRight = self.endCursorLocation;
+                }
+                else if(self.endCursorLocation == -1 && self.startCursorLocation != -1) {
+                    self.highlightLeafLeft = self.startCursorLocation;
+                    self.highlightLeafRight = (int) self.eqTextField.stringValue.length;
+                }
+                else {
+                    self.highlightLeafLeft = fmin(self.startCursorLocation, self.endCursorLocation);
+                    self.highlightLeafRight = fmax(self.startCursorLocation, self.endCursorLocation);
+                }
             }
             else {
-                self.highlightLeafLeft = fmin(self.startCursorLocation, self.endCursorLocation);
-                self.highlightLeafRight = fmax(self.startCursorLocation, self.endCursorLocation);
+                if(self.startCursorLocation == -1 && self.endCursorLocation == -1) {
+                    self.highlightLeafLeft = -1;
+                    self.highlightLeafRight = -1;
+                }
+                if(self.startCursorLocation == -1 && self.endCursorLocation != -1) {
+                    self.highlightLeafLeft = self.endCursorLocation;
+                    self.highlightLeafRight = (int) self.eqTextField.stringValue.length;
+                }
+                else if(self.endCursorLocation == -1 && self.startCursorLocation != -1) {
+                    self.highlightLeafLeft = 0;
+                    self.highlightLeafRight = self.startCursorLocation;
+                }
+                else {
+                    self.highlightLeafLeft = fmin(self.startCursorLocation, self.endCursorLocation);
+                    self.highlightLeafRight = fmax(self.startCursorLocation, self.endCursorLocation);
+                }
             }
         }
         for(int i=0; i<self.eqChildren.count; i++) {
-            if([self.eqChildren[i] eqFormat] == LEAF) {
-                [self.eqChildren[i] calculateHighlights: 1];
+            if(self.childWithStartCursor < i && i < self.childWithEndCursor && self.childWithStartCursor != -1 && self.childWithEndCursor != -1) {
+                [self.eqChildren[i] calculateHighlights: 2 isStartLeft:isStartLeft];
+            }
+            else if(self.childWithStartCursor > i && i > self.childWithEndCursor && self.childWithStartCursor != -1 && self.childWithEndCursor != -1) {
+                [self.eqChildren[i] calculateHighlights: 2 isStartLeft:isStartLeft];
+            }
+            else if(i == self.childWithStartCursor || i == self.childWithEndCursor) {
+                if(self.childWithStartCursor < self.childWithEndCursor) {
+                    [self.eqChildren[i] calculateHighlights: 1 isStartLeft: 1];
+                }
+                else {
+                    [self.eqChildren[i] calculateHighlights: 1 isStartLeft: -1];
+                }
             }
             else {
-                if(i > self.childWithStartCursor && i < self.childWithEndCursor) {
-                    [self.eqChildren[i] calculateHighlights: 2];
-                }
-                else if(i == self.childWithStartCursor) {
-                    [self.eqChildren[i] calculateHighlights: 1];
-                }
-                else if(i == self.childWithEndCursor) {
-                    [self.eqChildren[i] calculateHighlights: 1];
-                }
+                [self.eqChildren[i] calculateHighlights: 0 isStartLeft:0];
             }
         }
     }
@@ -859,14 +892,51 @@ double heightRatio = -1;
             // start highlighting
             if(self.startCursorLocation > 0) {
                 self.endCursorLocation = self.startCursorLocation - 1;
+                EquationFieldComponent *eq = self;
+                while(eq.parent != nil) {
+                    for(int i=0; i<eq.parent.eqChildren.count; i++) {
+                        if(eq.parent.eqChildren[i] == eq) {
+                            eq.parent.childWithEndCursor = i;
+                            break;
+                        }
+                    }
+                    eq = eq.parent;
+                }
+                return;
             }
         }
         else {
             // continue highlighting
             if(self.endCursorLocation > 0) {
                 self.endCursorLocation--;
+                return;
             }
         }
+        
+        EquationFieldComponent *eq = self;
+        while(eq.parent != nil) {
+            eq = eq.parent;
+            if(eq.childWithEndCursor == 0) {
+                eq.childWithEndCursor = -1;
+            }
+            else {
+                while(eq.childWithEndCursor > 0) {
+                    eq.childWithEndCursor--;
+                    if([eq.eqChildren[eq.childWithEndCursor] eqFormat] == LEAF) {
+                        eq = eq.eqChildren[eq.childWithEndCursor];
+                        break;
+                    }
+                }
+                if(eq.eqFormat == LEAF) {
+                    break;
+                }
+            }
+        }
+        while(eq.eqChildren.count != 0) {
+            eq.childWithEndCursor = 0;
+            eq = eq.eqChildren[eq.childWithEndCursor];
+        }
+        eq.endCursorLocation = (int) eq.eqTextField.stringValue.length;
     }
     else {
         // pass it on to children
@@ -887,14 +957,51 @@ double heightRatio = -1;
             // start highlighting
             if(self.startCursorLocation < self.eqTextField.stringValue.length) {
                 self.endCursorLocation = self.startCursorLocation + 1;
+                EquationFieldComponent *eq = self;
+                while(eq.parent != nil) {
+                    for(int i=0; i<eq.parent.eqChildren.count; i++) {
+                        if(eq.parent.eqChildren[i] == eq) {
+                            eq.parent.childWithEndCursor = i;
+                            break;
+                        }
+                    }
+                    eq = eq.parent;
+                }
+                return;
             }
         }
         else {
             // continue highlighting
             if(self.endCursorLocation < self.eqTextField.stringValue.length) {
                 self.endCursorLocation++;
+                return;
             }
         }
+        
+        EquationFieldComponent *eq = self;
+        while(eq.parent != nil) {
+            eq = eq.parent;
+            if(eq.childWithEndCursor == eq.eqChildren.count-1) {
+                eq.childWithEndCursor = -1;
+            }
+            else {
+                while(eq.childWithEndCursor < self.eqChildren.count-1) {
+                    eq.childWithEndCursor++;
+                    if([eq.eqChildren[eq.childWithEndCursor] eqFormat] == LEAF) {
+                        eq = eq.eqChildren[eq.childWithEndCursor];
+                        break;
+                    }
+                }
+                if(eq.eqFormat == LEAF) {
+                    break;
+                }
+            }
+        }
+        while(eq.eqChildren.count != 0) {
+            eq.childWithEndCursor = (int) eq.eqChildren.count - 1;
+            eq = eq.eqChildren[eq.childWithEndCursor];
+        }
+        eq.endCursorLocation = 0;
     }
     else {
         // pass it on to children
@@ -919,7 +1026,7 @@ double heightRatio = -1;
     self.highlightLeafRight = -1;
     
     for(int i=0; i<self.eqChildren.count; i++) {
-        [self undoHighlighting];
+        [self.eqChildren[i] undoHighlighting];
     }
 }
 
