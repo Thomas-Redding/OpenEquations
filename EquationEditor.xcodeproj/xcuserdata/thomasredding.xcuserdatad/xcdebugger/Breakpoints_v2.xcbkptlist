@@ -58,11 +58,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "EquationEditor/EquationFieldComponent.m"
-            timestampString = "446941686.550509"
+            timestampString = "446941796.277836"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1237"
-            endingLineNumber = "1237"
+            startingLineNumber = "1236"
+            endingLineNumber = "1236"
             landmarkName = "-deleteHighlightedPart"
             landmarkType = "5">
          </BreakpointContent>

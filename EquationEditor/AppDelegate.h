@@ -11,9 +11,7 @@
 
 /*
  TODO
- - add ()
- - add highlighting
- - add deleting components
+ - customize/fix highlighting for non-Normal components
 */
 
 @interface AppDelegate : NSObject <NSApplicationDelegate>
