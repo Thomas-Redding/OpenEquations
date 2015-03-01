@@ -1065,6 +1065,9 @@ BOOL isHighlighting = false;
     [self.eq highlightRight];
     [self calculateHighlights];
     [self callAllDrawRects];
+    
+    int q = 5;
+    q = 3;
 }
 
 - (void) giveCursorToRightMostChild: (EquationFieldComponent*) eq {

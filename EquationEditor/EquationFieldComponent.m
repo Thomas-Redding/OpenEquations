@@ -955,6 +955,9 @@ double heightRatio = -1;
             }
             eq.endCursorLocation = (int) eq.eqTextField.stringValue.length;
         }
+        else {
+            self.endCursorLocation = 0;
+        }
     }
     else {
         // pass it on to children
@@ -1037,7 +1040,11 @@ double heightRatio = -1;
                 eq.childWithEndCursor = (int) eq.eqChildren.count - 1;
                 eq = eq.eqChildren[eq.childWithEndCursor];
             }
+            
             eq.endCursorLocation = 0;
+        }
+        else {
+            self.endCursorLocation = (int) self.eqTextField.stringValue.length;
         }
     }
     else {

@@ -58,11 +58,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "EquationEditor/EquationField.m"
-            timestampString = "446883191.041832"
+            timestampString = "446886226.613712"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1198"
-            endingLineNumber = "1198"
+            startingLineNumber = "1201"
+            endingLineNumber = "1201"
             landmarkName = "-undoHighlighting:"
             landmarkType = "5">
          </BreakpointContent>
