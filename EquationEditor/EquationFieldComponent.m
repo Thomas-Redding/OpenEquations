@@ -529,7 +529,7 @@ double heightRatio = -1;
             }
         }
     }
-    else if(self.eqFormat == INTEGRATION) {
+    else if(self.eqFormat == LOGBASE) {
         if(x < self.eqImageView.frame.size.width+[self.eqChildren[0] frame].size.width) {
             BOOL success = [self.eqChildren[0] setStartCursorToEq:x y:y];
             if(success) {
@@ -1098,29 +1098,36 @@ double heightRatio = -1;
     else if(self.eqFormat == DIVISION) {
         if(y >= self.heightRatio*self.frame.size.height) {
             [self.eqChildren[0] setEndCursorEq:x y:y];
+            self.childWithEndCursor = 0;
         }
         else {
             [self.eqChildren[1] setEndCursorEq:x y:y];
+            self.childWithEndCursor = 1;
         }
     }
     else if(self.eqFormat == SUPERSCRIPT) {
         [self.eqChildren[0] setEndCursorEq:x y:y];
+        self.childWithEndCursor = 0;
     }
     else if(self.eqFormat == SQUAREROOT) {
         [self.eqChildren[0] setEndCursorEq:x y:y];
+        self.childWithEndCursor = 0;
     }
     else if(self.eqFormat == SUMMATION) {
         double leftWidth = fmax(fmax([self.eqChildren[0] frame].size.width-100, [self.eqChildren[1] frame].size.width-100), self.eqImageView.frame.size.width);
         if(x < leftWidth) {
             if(y < [self.eqChildren[0] frame].size.height + self.eqImageView.frame.size.height/2) {
                 [self.eqChildren[0] setEndCursorEq:x y:y];
+                self.childWithEndCursor = 0;
             }
             else {
                 [self.eqChildren[1] setEndCursorEq:x y:y];
+                self.childWithEndCursor = 1;
             }
         }
         else {
             [self.eqChildren[2] setEndCursorEq:x y:y];
+            self.childWithEndCursor = 2;
         }
     }
     else if(self.eqFormat == INTEGRATION) {
@@ -1128,30 +1135,37 @@ double heightRatio = -1;
         if(x < leftWidth) {
             if(y < [self.eqChildren[0] frame].size.height + self.eqImageView.frame.size.height/2) {
                 [self.eqChildren[0] setEndCursorEq:x y:y];
+                self.childWithEndCursor = 0;
             }
             else {
                 [self.eqChildren[1] setEndCursorEq:x y:y];
+                self.childWithEndCursor = 1;
             }
         }
         else {
             [self.eqChildren[2] setEndCursorEq:x y:y];
+            self.childWithEndCursor = 2;
         }
     }
-    else if(self.eqFormat == INTEGRATION) {
+    else if(self.eqFormat == LOGBASE) {
         if(x < self.eqImageView.frame.size.width+[self.eqChildren[0] frame].size.width) {
             [self.eqChildren[0] setEndCursorEq:x y:y];
+            self.childWithEndCursor = 0;
         }
         else {
             [self.eqChildren[1] setEndCursorEq:x y:y];
+            self.childWithEndCursor = 1;
         }
     }
     else if(self.eqFormat == PARENTHESES){
         [self.eqChildren[0] setEndCursorEq:x y:y];
+        self.childWithEndCursor = 0;
     }
     else if(self.eqFormat == NORMAL){
         for(int i=0; i<self.eqChildren.count; i++) {
             if(x >= [self.eqChildren[i] frame].origin.x && x <= [self.eqChildren[i] frame].origin.x + [self.eqChildren[i] frame].size.width-100) {
                 [self.eqChildren[i] setEndCursorEq:x y:y];
+                self.childWithEndCursor = i;
             }
         }
     }

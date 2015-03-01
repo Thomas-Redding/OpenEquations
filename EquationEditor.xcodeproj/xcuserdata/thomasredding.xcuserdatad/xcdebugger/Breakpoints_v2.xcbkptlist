@@ -57,13 +57,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "EquationEditor/EquationField.m"
-            timestampString = "446886226.613712"
+            filePath = "EquationEditor/EquationCursor.m"
+            timestampString = "446918793.176936"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1201"
-            endingLineNumber = "1201"
-            landmarkName = "-undoHighlighting:"
+            startingLineNumber = "38"
+            endingLineNumber = "38"
+            landmarkName = "-changeState:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

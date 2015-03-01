@@ -35,12 +35,15 @@ int counter = 0;
 }
 
 - (void) changeState: (NSNumber*) counterAtCall {
+    NSLog(@"%i:%i:%i", self.consistentHide, self.hidden, self.consistentHide);
     if(counter == counterAtCall.intValue) {
         if(self.hidden && !self.consistentHide) {
+            
             [self setHidden:false];
             [self performSelector:@selector(changeState:) withObject:[NSNumber numberWithInt:counter] afterDelay:0.5];
         }
         else {
+            
             [self setHidden:true];
             [self performSelector:@selector(changeState:) withObject:[NSNumber numberWithInt:counter] afterDelay:0.5];
         }

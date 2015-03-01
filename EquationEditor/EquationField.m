@@ -143,6 +143,10 @@ BOOL isHighlighting = false;
 }
 
 - (void) mouseDragged:(NSEvent *)theEvent {
+    NSPoint pt = [self.window mouseLocationOutsideOfEventStream];
+    pt.x -= self.frame.origin.x;
+    pt.y -= self.frame.origin.y;
+    [self setEndCursorToEq:pt.x y:pt.y];
 }
 
 - (void) mouseDown:(NSEvent *)theEvent {
@@ -177,7 +181,6 @@ BOOL isHighlighting = false;
         }
         else {
             // normal left
-            NSLog(@"%i", isHighlighting);
             if(isHighlighting) {
                 [self undoHighlighting: -1];
                 isHighlighting = false;
@@ -323,7 +326,7 @@ BOOL isHighlighting = false;
 
 // draw background color
 - (void) drawRect:(NSRect)dirtyRect {
-    [[NSColor colorWithCalibratedRed:1.0 green:1.0 blue:1.0 alpha:1.0] setFill];
+    [[NSColor colorWithCalibratedRed:1.0 green:1.0 blue:1.0 alpha:0.5] setFill];
     NSRectFill(dirtyRect);
     [super drawRect:dirtyRect];
 }
@@ -997,8 +1000,9 @@ BOOL isHighlighting = false;
     }
     else {
         componentWithCursor.startCursorLocation--;
-        [self adjustCursorLocation];
     }
+    
+    [self adjustCursorLocation];
 }
 
 - (void) rightArrowPressed {
@@ -1078,7 +1082,6 @@ BOOL isHighlighting = false;
         current = current.eqChildren[current.childWithStartCursor];
     }
     current.startCursorLocation = (int) current.eqTextField.stringValue.length;
-    [self adjustCursorLocation];
 }
 
 - (void) giveCursorToLeftMostChild: (EquationFieldComponent*) eq {
@@ -1088,7 +1091,6 @@ BOOL isHighlighting = false;
         current = current.eqChildren[0];
     }
     current.startCursorLocation = 0;
-    [self adjustCursorLocation];
 }
 
 - (void) adjustCursorLocation {
@@ -1111,7 +1113,10 @@ BOOL isHighlighting = false;
         NSDictionary *attr = [componentWithCursor.eqTextField.attributedStringValue attributesAtIndex:0 effectiveRange:nil];
         xpos += [[NSAttributedString alloc] initWithString:str attributes:attr].size.width;
     }
+    
     self.cursor.frame = NSMakeRect(xpos - newWidthOfCursor/2, ypos, newWidthOfCursor, componentWithCursor.frame.size.height);
+    
+    [self patchCursorGlitch];
 }
 
 - (BOOL) setStartCursorToEq: (double) x y: (double) y {
@@ -1155,7 +1160,7 @@ BOOL isHighlighting = false;
 }
 
 - (void) setEndCursorToEq: (double) x y: (double) y {
-    [self.cursor show];
+    isHighlighting = true;
     if(x >=0 && x <= self.eq.frame.size.width-100 && y >= self.eq.frame.origin.y && y <= self.eq.frame.origin.y+self.eq.frame.size.height) {
         [self.eq setEndCursorEq:x y:y];
     }
@@ -1179,6 +1184,10 @@ BOOL isHighlighting = false;
         }
         current.endCursorLocation = 0;
     }
+    self.cursor.consistentHide = true;
+    [self.cursor hide];
+    [self calculateHighlights];
+    [self callAllDrawRects];
 }
 
 - (void) callAllDrawRects {
@@ -1193,9 +1202,9 @@ BOOL isHighlighting = false;
 - (void) undoHighlighting: (int) direction {
     EquationFieldComponent *eq = self.eq;
     int first = 0;
-    
     if(direction == -1) {
         while(eq.childWithStartCursor != -1) {
+            
             if(eq.childWithStartCursor < eq.childWithEndCursor) {
                 first = 1;
                 eq = eq.eqChildren[eq.childWithStartCursor];
@@ -1224,7 +1233,6 @@ BOOL isHighlighting = false;
             }
         }
     }
-    
     
     int newCursorLocation;
     if(first == 0) {
@@ -1270,6 +1278,11 @@ BOOL isHighlighting = false;
     
     int q = 5;
     q = 3;
+}
+
+- (void) patchCursorGlitch {
+    [self.cursor removeFromSuperview];
+    [self addSubview:self.cursor];
 }
 
 @end
