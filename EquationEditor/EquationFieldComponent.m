@@ -55,7 +55,7 @@ double heightRatio = -1;
         NSRectFill(NSMakeRect(dirtyRect.origin.x, dirtyRect.origin.y, dirtyRect.size.width-100, dirtyRect.size.height));
     }
     else if(self.eqFormat == LEAF && (self.highlightLeafLeft != -1 || self.highlightLeafRight != -1)) {
-        NSDictionary *attr = [self.eqTextField.attributedStringValue attributesAtIndex:0 effectiveRange:nil];
+        NSDictionary *attr = @{NSFontAttributeName : [self.fontManager getFont:self.frame.size.height/self.options.fontSizeToLeafA]};
         double x = [[[NSAttributedString alloc] initWithString:[self.eqTextField.stringValue substringToIndex:self.highlightLeafLeft] attributes:attr] size].width;
         NSSize size = [[[NSAttributedString alloc] initWithString:[self.eqTextField.stringValue substringWithRange:NSMakeRange(self.highlightLeafLeft, self.highlightLeafRight-self.highlightLeafLeft)] attributes:attr] size];
         [[NSColor colorWithRed:0.0 green:0.0 blue:1.0 alpha:0.1] setFill];
