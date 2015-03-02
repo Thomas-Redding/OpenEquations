@@ -728,6 +728,16 @@ double heightRatio = -1;
             }
         }
     }
+    
+    // replace empty NORMALs with LEAFs
+    for(int i=0; i<self.eqChildren.count; i++) {
+        if([self.eqChildren[i] eqFormat] == NORMAL && [self.eqChildren[i] eqChildren].count == 0) {
+            // todo
+            
+            int q = 5;
+            q = 3;
+        }
+    }
 }
 
 - (void) addHundredToWidth {
@@ -924,7 +934,10 @@ double heightRatio = -1;
         int isLastLeaf = true;
         EquationFieldComponent *eq = self;
         while(eq.parent != nil) {
-            if(eq.parent.eqChildren[0] == eq) {
+            if(eq.parent.eqFormat != NORMAL) {
+                // parent isn't normal, continue upward
+            }
+            else if(eq.parent.eqChildren[0] == eq) {
                 // I am the last child
             }
             else {
@@ -1007,10 +1020,14 @@ double heightRatio = -1;
             }
         }
         
+        // tell parent to move cursor to next child
         int isLastLeaf = true;
         EquationFieldComponent *eq = self;
         while(eq.parent != nil) {
-            if(eq.parent.eqChildren[eq.parent.eqChildren.count-1] == eq) {
+            if(eq.parent.eqFormat != NORMAL) {
+                // parent isn't normal, continue upward
+            }
+            else if(eq.parent.eqChildren[eq.parent.eqChildren.count-1] == eq) {
                 // I am the last child
             }
             else {
@@ -1212,6 +1229,7 @@ double heightRatio = -1;
                 NSString *first = [self.eqTextField.stringValue substringToIndex:self.highlightLeafLeft];
                 NSString *second = [self.eqTextField.stringValue substringFromIndex:self.highlightLeafRight];
                 NSString *newString = [[NSString alloc] initWithFormat:@"%@%@", first, second];
+                
                 NSAttributedString *str = [[NSAttributedString alloc] initWithString:newString attributes:attr];
                 self.eqTextField.attributedStringValue = str;
                 if(self.highlightLeafLeft == self.startCursorLocation || self.highlightLeafRight == self.startCursorLocation) {
@@ -1225,17 +1243,26 @@ double heightRatio = -1;
     }
     else if (self.eqFormat == NORMAL) {
         for(int i=0; i<self.eqChildren.count; i++) {
-            if([self.eqChildren[i] shouldBeCompletelyHighlighted]) {
-                [self.eqChildren[i] deleteMyChildren];
-                [self.eqChildren removeObjectAtIndex:i];
-                i--;
+            if([self.eqChildren[i] eqFormat] != LEAF) {
+                if([self.eqChildren[i] shouldBeCompletelyHighlighted]) {
+                    [self.eqChildren[i] deleteMyChildren];
+                    [self.eqChildren[i] removeFromSuperview];
+                    [self.eqChildren removeObjectAtIndex:i];
+                    i--;
+                }
+                else {
+                    [self.eqChildren[i] deleteHighlightedPart];
+                }
+            }
+            else {
+                [self.eqChildren[i] deleteHighlightedPart];
             }
         }
     }
     else {
-        
-        int q = 5;
-        q = 3;
+        for(int i=0; i<self.eqChildren.count; i++) {
+            [self.eqChildren[i] deleteHighlightedPart];
+        }
     }
 }
 

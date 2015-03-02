@@ -220,8 +220,7 @@ BOOL isHighlighting = false;
     }
     else if(theEvent.keyCode == 0 && (theEvent.modifierFlags & NSCommandKeyMask)) {
         // command + A
-        // highlight all
-        // todo
+        [self highlightAll];
     }
     else if(theEvent.keyCode == 6 && (theEvent.modifierFlags & NSCommandKeyMask) && (theEvent.modifierFlags & NSShiftKeyMask)) {
         // command + shift + Z
@@ -1289,14 +1288,33 @@ BOOL isHighlighting = false;
 
 - (void) deleteHighlightedPart {
     [self.eq deleteHighlightedPart];
+    
     [self undoHighlighting:-1];
+    
     isHighlighting = false;
     self.cursor.consistentHide = false;
+    
+    [self.eq simplifyStructure];
+    
+    if(self.eq.eqFormat == NORMAL && self.eq.eqChildren.count == 1 && [self.eq.eqChildren[0] eqFormat] == LEAF) {
+        [self.eq removeFromSuperview];
+        [self.eq deleteMyChildren];
+        self.eq = [[EquationFieldComponent alloc] initWithFontManagerOptionsAndParent:self.fontManager options:options parent:nil];
+        self.eq.eqFormat = LEAF;
+        self.eq.eqTextField = [[EquationTextField alloc] init];
+        [self addSubview:self.eq];
+        self.eq.startCursorLocation = 0;
+        [self adjustCursorLocation];
+    }
+    
     [self completeRecalculation];
+    
     [self adjustCursorLocation];
-    [self patchCursorGlitch];
+    
+    
+    int q = 5;
+    q = 3;
 }
-
 
 - (void) printStructure {
     NSLog(@"%@", [self toDebugString:self.eq]);
@@ -1342,6 +1360,36 @@ BOOL isHighlighting = false;
     }
     [str appendString:@"}"];
     return str;
+}
+
+- (void) highlightAll {
+    isHighlighting = true;
+    self.cursor.consistentHide = true;
+    [self.cursor hide];
+    [self.eq resetAllCursorPointers];
+    if(self.eq.eqFormat == LEAF) {
+        self.eq.startCursorLocation = 0;
+        self.eq.endCursorLocation = (int) self.eq.eqTextField.stringValue.length;
+    }
+    else {
+        EquationFieldComponent *eq = self.eq;
+        while(eq.eqChildren.count != 0) {
+            eq.childWithStartCursor = 0;
+            eq = eq.eqChildren[eq.childWithStartCursor];
+        }
+        eq.startCursorLocation = 0;
+        
+        eq = self.eq;
+        while(eq.eqChildren.count != 0) {
+            eq.childWithEndCursor = (int) eq.eqChildren.count - 1;
+            eq = eq.eqChildren[eq.childWithEndCursor];
+        }
+        eq.endCursorLocation = (int) eq.eqTextField.stringValue.length;
+    }
+    
+    
+    [self calculateHighlights];
+    [self callAllDrawRects];
 }
 
 @end

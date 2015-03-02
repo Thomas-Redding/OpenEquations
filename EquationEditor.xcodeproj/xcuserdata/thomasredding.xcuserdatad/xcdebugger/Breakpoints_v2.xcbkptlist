@@ -38,16 +38,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "No"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "EquationEditor/EquationFieldComponent.m"
-            timestampString = "446941686.550509"
+            filePath = "EquationEditor/EquationField.m"
+            timestampString = "446941289.958143"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "812"
-            endingLineNumber = "812"
-            landmarkName = "-calculateHighlights:isStartLeft:"
+            startingLineNumber = "173"
+            endingLineNumber = "173"
+            landmarkName = "-keyDown:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -58,11 +58,27 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "EquationEditor/EquationFieldComponent.m"
-            timestampString = "446941796.277836"
+            timestampString = "447024071.227465"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1236"
-            endingLineNumber = "1236"
+            startingLineNumber = "736"
+            endingLineNumber = "736"
+            landmarkName = "-simplifyStructure"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "EquationEditor/EquationField.m"
+            timestampString = "447024901.253278"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1314"
+            endingLineNumber = "1314"
             landmarkName = "-deleteHighlightedPart"
             landmarkType = "5">
          </BreakpointContent>
@@ -74,12 +90,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "EquationEditor/EquationField.m"
-            timestampString = "446941289.958143"
+            timestampString = "447025149.420828"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "173"
-            endingLineNumber = "173"
-            landmarkName = "-keyDown:"
+            startingLineNumber = "1100"
+            endingLineNumber = "1100"
+            landmarkName = "-adjustCursorLocation"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
